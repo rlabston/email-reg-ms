@@ -1,0 +1,80 @@
+HELP.md
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+
+### General OS / editor artifacts ###
+.DS_Store
+Thumbs.db
+
+### Java ###
+*.class
+*.log
+hs_err_pid*
+
+### Maven (if present) ###
+target/
+
+### Spring Boot runtime ###
+*.pid
+*.pid.lock
+logs/
+
+### Node / Angular (frontend) ###
+**/node_modules/
+**/dist/
+**/.angular/
+**/.cache/
+*.angular/cache/
+**/.env
+**/.env.*
+
+### Android ###
+local.properties
+captures/
+.cxx/
+
+### Python (utility scripts / venvs) ###
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt

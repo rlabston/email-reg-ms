@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.EmailRegistration" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Customize your theme here. Keep minimal to satisfy build. -->
+        <item name="colorPrimary">#6200EE</item>
+        <item name="colorPrimaryVariant">#3700B3</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+    </style>
+</resources>
