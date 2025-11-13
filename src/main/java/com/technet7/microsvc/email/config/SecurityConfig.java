@@ -18,8 +18,9 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 /**
- * Security configuration for password encoding and endpoint security.
- * Provides a PasswordEncoder bean for use throughout the application.
+ * Security configuration for the public API.
+ * All endpoints are publicly accessible without authentication.
+ * CORS is configured to allow access from any origin.
  */
 @Configuration
 @EnableWebSecurity
@@ -48,21 +49,18 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())  // Disable CSRF for API endpoints
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/emails/**").permitAll()  // Allow public access to email registration
-                .requestMatchers("/mindsdb/**").authenticated()  // Require authentication for MindsDB endpoints
-                .anyRequest().permitAll()  // Allow all other requests
-            )
-            .httpBasic(basic -> {});  // Enable HTTP Basic authentication for MindsDB endpoints
+                .anyRequest().permitAll()  // Allow public access to all endpoints
+            );
         return http.build();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200", "http://127.0.0.1:4200"));
+        configuration.setAllowedOriginPatterns(Arrays.asList("*"));  // Allow all origins for public API
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(true);
+        configuration.setAllowCredentials(false);  // Disable credentials for public access
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
