@@ -11,4 +11,8 @@ import com.technet7.microsvc.email.model.RegisteredEmail;
 public interface EmailRegistrationRepository extends JpaRepository<RegisteredEmail, Long> {
     Optional<RegisteredEmail> findByEmail(String email);
     boolean existsByEmail(String email);
+    
+    // Explicit method to fetch entities with their roles collection (helps avoid N+1)
+    @org.springframework.data.jpa.repository.Query("SELECT r FROM RegisteredEmail r LEFT JOIN FETCH r.roles")
+    java.util.List<RegisteredEmail> findAllWithRoles();
 }

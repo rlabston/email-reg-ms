@@ -1,0 +1,18 @@
+## logrotate config template for email-reg-ms logs
+## This file is a template. Run scripts/install-logrotate.sh to install
+## it into /etc/logrotate.d with the repo root expanded.
+
+@ROOT@/logs/*.log {
+    daily
+    rotate 7
+    compress
+    delaycompress
+    missingok
+    notifempty
+    copytruncate
+    create 0644 root root
+    sharedscripts
+    postrotate
+        # no-op; logs are written via nohup/java so copytruncate is used
+    endscript
+}

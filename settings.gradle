@@ -6,8 +6,11 @@ pluginManagement {
     }
     plugins {
         // Provide Android Gradle plugin version for subprojects
-        id 'com.android.application' version '8.1.0'
-        id 'com.android.library' version '8.1.0'
+        // Bump AGP to a newer 8.x release to address deprecation warnings
+        // (will improve compatibility with newer Gradle versions)
+        // Try a newer AGP patch release; this can reduce internal deprecation warnings
+        id 'com.android.application' version '8.3.0'
+        id 'com.android.library' version '8.3.0'
     }
 }
 
@@ -20,4 +23,14 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = 'email-reg-ms'
-include ':android-client'
+// Allow skipping the Android subproject during backend/CI builds by setting
+// the environment variable SKIP_ANDROID_BUILD=true. This is useful when
+// you only need to build/run the backend and want to avoid Android Gradle
+// Plugin internal deprecation warnings (or long Android toolchain downloads).
+def skipAndroid = System.getenv('SKIP_ANDROID_BUILD') == 'true'
+if (!skipAndroid) {
+    include ':android-client'
+} else {
+    logger.lifecycle("Skipping include ':android-client' because SKIP_ANDROID_BUILD=true")
+}
+include ':gateway'

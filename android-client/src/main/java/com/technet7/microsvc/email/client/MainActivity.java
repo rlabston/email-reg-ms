@@ -3,8 +3,15 @@ package com.technet7.microsvc.email.client;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.util.Log;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.textfield.TextInputEditText;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -18,10 +25,23 @@ public class MainActivity extends AppCompatActivity {
     private TextInputEditText usernameInput;
     private TextInputEditText passwordInput;
     private Button registerButton;
+    private Button loadButton;
+    private Button logoutButton;
+    private RecyclerView emailsRecyclerView;
+    private RegisteredEmailAdapter emailAdapter;
     private EmailService emailService;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private TextView welcomeText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Require login
+        SharedPreferences prefsPre = getSharedPreferences("auth_prefs", MODE_PRIVATE);
+        if (prefsPre.getString("email", null) == null) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+            return;
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -29,9 +49,33 @@ public class MainActivity extends AppCompatActivity {
     usernameInput = findViewById(R.id.usernameInput);
     passwordInput = findViewById(R.id.passwordInput);
     registerButton = findViewById(R.id.registerButton);
+    loadButton = findViewById(R.id.loadButton);
+    logoutButton = findViewById(R.id.logoutButton);
+    emailsRecyclerView = findViewById(R.id.emailsRecyclerView);
+    swipeRefreshLayout = findViewById(R.id.swipeRefresh);
+    welcomeText = findViewById(R.id.welcomeText);
 
+    // Recycler setup
+    emailAdapter = new RegisteredEmailAdapter();
+    emailsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+    emailsRecyclerView.setAdapter(emailAdapter);
+
+        setupWelcomeHeader();
         setupRetrofit();
         setupClickListeners();
+
+        // Auto-load list on start so the user immediately sees current data
+        loadRegisteredEmails();
+    }
+
+    private void setupWelcomeHeader() {
+        SharedPreferences prefs = getSharedPreferences("auth_prefs", MODE_PRIVATE);
+        String username = prefs.getString("username", null);
+        String email = prefs.getString("email", "");
+        String display = username != null && !username.isEmpty() ? username : email;
+        if (welcomeText != null) {
+            welcomeText.setText("Welcome, " + (display == null ? "" : display));
+        }
     }
 
     private void setupRetrofit() {
@@ -61,11 +105,21 @@ public class MainActivity extends AppCompatActivity {
             if (TextUtils.isEmpty(password)) {
                 passwordInput.setError("Password is required");
                 valid = false;
+                } else if (password.length() < 8) {
+                    passwordInput.setError("Password must be at least 8 characters");
+                    valid = false;
             }
             if (!valid) return;
 
             registerEmail(email, username, password);
         });
+
+        loadButton.setOnClickListener(v -> loadRegisteredEmails());
+        logoutButton.setOnClickListener(v -> logout());
+
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setOnRefreshListener(this::loadRegisteredEmails);
+        }
     }
 
     private String safeText(TextInputEditText input) {
@@ -122,5 +176,37 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Network error: " + msg, Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private void loadRegisteredEmails() {
+        if (swipeRefreshLayout != null) swipeRefreshLayout.setRefreshing(true);
+        emailService.getRegisteredEmails().enqueue(new Callback<java.util.List<RegisteredEmailItem>>() {
+            @Override
+            public void onResponse(Call<java.util.List<RegisteredEmailItem>> call, Response<java.util.List<RegisteredEmailItem>> response) {
+                if (swipeRefreshLayout != null) swipeRefreshLayout.setRefreshing(false);
+                if (response.isSuccessful() && response.body() != null) {
+                    emailAdapter.setItems(response.body());
+                    int count = response.body() == null ? 0 : response.body().size();
+                    Toast.makeText(MainActivity.this, "Loaded " + count + " emails", Toast.LENGTH_SHORT).show();
+                    Log.d("MainActivity", "Loaded " + count + " registered emails");
+                } else {
+                    Toast.makeText(MainActivity.this, "Failed to load list (" + response.code() + ")", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<java.util.List<RegisteredEmailItem>> call, Throwable t) {
+                if (swipeRefreshLayout != null) swipeRefreshLayout.setRefreshing(false);
+                Toast.makeText(MainActivity.this, "Error: " + (t.getMessage() == null ? "unknown" : t.getMessage()), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void logout() {
+        getSharedPreferences("auth_prefs", MODE_PRIVATE).edit().clear().apply();
+        Intent i = new Intent(this, LoginActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(i);
+        finish();
     }
 }

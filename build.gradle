@@ -10,7 +10,8 @@ description = 'Email Registration Microservice'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(24)
+        // Use Java 17 for compilation to match the runtime and project expectations
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 
@@ -20,11 +21,25 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
+    // JWT support for stateless auth to back the SPA
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
     implementation 'org.flywaydb:flyway-core:10.17.1'
     runtimeOnly 'com.mysql:mysql-connector-j'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mockito:mockito-core:5.8.0'
     testImplementation 'org.mockito:mockito-junit-jupiter:5.8.0'
+    testRuntimeOnly 'com.h2database:h2'
+    testImplementation 'org.springframework.security:spring-security-test'
+}
+
+// Import Spring Cloud BOM so subprojects can use Spring Cloud starters with compatible versions
+dependencyManagement {
+    imports {
+        // Use the Spring Cloud release train compatible with Spring Boot 3.5.x
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2025.0.0'
+    }
 }
 
 test {
@@ -42,4 +57,18 @@ springBoot {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+// Include compiled frontend files (if present) into the Spring Boot jar resources
+// so they are served from the same origin as the backend.
+def frontendBrowserDir = file("${projectDir}/web-frontend/dist/web-frontend/browser")
+if (frontendBrowserDir.exists()) {
+    processResources {
+        // Copy files from web-frontend build output into classpath:/static so Spring Boot serves them
+        from(frontendBrowserDir) {
+            into 'static'
+        }
+    }
+} else {
+    logger.lifecycle("Frontend build not found at: ${frontendBrowserDir}. Skipping copy into classpath:/static.\nTo include the frontend, run the frontend build (e.g. `cd web-frontend && npm run build`) before building the backend.")
 }

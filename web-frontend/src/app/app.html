@@ -1,4 +1,11 @@
+<ng-container *ngIf="authInitialized()">
+  <ng-container *ngIf="authed(); else unauthTpl">
 <div class="app-container">
+  <div class="header-bar">
+    <h3>{{ welcomeMessage() }}</h3>
+    <button type="button" class="logout-button" (click)="logout($event)">Logout</button>
+  </div>
+
   <div class="registration-card">
     <h1 class="title">{{ title() }}</h1>
     
@@ -11,7 +18,7 @@
           name="email"
           [(ngModel)]="email"
           placeholder="Enter your email"
-          [disabled]="isLoading()"
+          [disabled]="isSubmitting()"
           required
         />
       </div>
@@ -24,31 +31,42 @@
           name="username"
           [(ngModel)]="username"
           placeholder="Enter your username"
-          [disabled]="isLoading()"
+          [disabled]="isSubmitting()"
           required
         />
       </div>
 
       <div class="input-group">
         <label for="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          [(ngModel)]="password"
-          placeholder="Enter your password"
-          [disabled]="isLoading()"
-          required
-        />
+        <div class="password-input-wrapper">
+          <input
+            [type]="showPassword() ? 'text' : 'password'"
+            id="password"
+            name="password"
+            [(ngModel)]="password"
+            placeholder="Enter your password"
+            [disabled]="isSubmitting()"
+            required
+          />
+          <button
+            type="button"
+            class="toggle-password"
+            (click)="showPassword.set(!showPassword())"
+            [disabled]="isSubmitting()"
+            [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
+          >
+            {{ showPassword() ? '👁️' : '👁️‍🗨️' }}
+          </button>
+        </div>
       </div>
 
       <button 
         type="submit" 
         class="register-button"
-        [disabled]="isLoading()"
+        [disabled]="isSubmitting()"
       >
-        <span *ngIf="!isLoading()">Register</span>
-        <span *ngIf="isLoading()">Registering...</span>
+        <span *ngIf="!isSubmitting()">Register</span>
+        <span *ngIf="isSubmitting()">Registering...</span>
       </button>
 
       <div 
@@ -60,4 +78,59 @@
       </div>
     </form>
   </div>
+  
+  <div class="list-card" *ngIf="isAdmin(); else notAdminTpl">
+    <div class="list-header">
+      <h2>Registered Emails</h2>
+      <button type="button" (click)="loadEmails()" [disabled]="listLoading()">
+        <span *ngIf="!listLoading()">Load</span>
+        <span *ngIf="listLoading()">Loading...</span>
+      </button>
+    </div>
+
+    <div *ngIf="emails().length === 0 && !listLoading()" class="empty-state">
+      No emails loaded yet.
+    </div>
+
+    <table *ngIf="emails().length > 0" class="emails-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Email</th>
+          <th>Username</th>
+          <th>Registered</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let e of emails()" (click)="selectEmail(e)" [class.selected]="selectedEmail() === e.email">
+          <td>{{ e.id }}</td>
+          <td>{{ e.email }}</td>
+          <td>{{ e.username }}</td>
+          <td>{{ e.registrationDate }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="list-actions" style="margin-top:12px;">
+      <button type="button" (click)="deleteSelected()" [disabled]="!selectedEmail()">Delete Selected</button>
+    </div>
+  </div>
+
+  <ng-template #notAdminTpl>
+    <div class="list-card">
+      <div style="padding:20px;color:#666;">Registered emails list is visible to administrators only.</div>
+    </div>
+  </ng-template>
+
 </div>
+
+  </ng-container>
+  <ng-template #unauthTpl>
+    <div class="app-container">
+        <div class="registration-card" style="text-align:center;padding:40px;color:#333;" role="status" aria-live="polite">
+          <h2 *ngIf="showRedirectingMessage()">Redirecting to login...</h2>
+        </div>
+    </div>
+  </ng-template>
+</ng-container>
+
