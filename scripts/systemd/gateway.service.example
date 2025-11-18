@@ -1,0 +1,41 @@
+## Example systemd unit for the gateway
+# Copy this file to /etc/systemd/system/email-reg-ms-gateway.service and edit USER and JAR_PATH
+# Then enable and start with:
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now email-reg-ms-gateway.service
+#
+# Notes:
+# - This is a minimal example. Adjust `User`, `WorkingDirectory`, `ExecStart` and log paths to match your system.
+# - It's recommended to let systemd handle stdout/stderr (journal). If you prefer file logs, create the log dir and
+#   update the `ExecStart` to redirect output, or use `StandardOutput=file:` (requires systemd version that supports it).
+
+[Unit]
+Description=Email Registration Microservice - Gateway
+After=network.target
+
+[Service]
+# Replace with the user you want the process to run as
+User=ubuntu
+# Working directory for the service (repository root). Replace as needed.
+WorkingDirectory=/home/ubuntu/dev/mobile/spring/email-reg-ms
+
+# Path to the gateway jar. Replace with the actual built jar path in your environment.
+# Example: /home/ubuntu/dev/mobile/spring/email-reg-ms/gateway/build/libs/gateway-0.0.1-SNAPSHOT.jar
+ExecStart=/usr/bin/java -jar /home/ubuntu/dev/mobile/spring/email-reg-ms/gateway/build/libs/gateway-0.0.1-SNAPSHOT.jar
+
+# Optional: pass JVM options via environment
+Environment=JAVA_OPTS=
+
+# systemd restart policy
+Restart=on-failure
+RestartSec=5s
+
+# File descriptor limit
+LimitNOFILE=65536
+
+# Let systemd capture stdout/stderr (goes to journal by default)
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
