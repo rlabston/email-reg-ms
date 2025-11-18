@@ -24,9 +24,12 @@ pluginManagement {
                 includeGroupByRegex("androidx.*")
             }
         }
-        // JetBrains Kotlin EAP/dev repository (needed to resolve pre-release Kotlin plugin artifacts)
+        // JetBrains Kotlin EAP/dev repositories (needed to resolve pre-release Kotlin plugin artifacts)
         maven {
             url = uri("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/dev")
+        }
+        maven {
+            url = uri("https://maven.pkg.jetbrains.space/kotlin/p/kotlin/eap")
         }
         mavenCentral()
         gradlePluginPortal()
