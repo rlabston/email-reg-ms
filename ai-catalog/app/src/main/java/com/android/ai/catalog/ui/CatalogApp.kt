@@ -71,8 +71,16 @@ fun CatalogApp(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     var isDialogOpened by remember { mutableStateOf(false) }
 
-    // Draw the app background image behind all screens so it's visible regardless of destination
+    // Diagnostic: draw a bright magenta layer to test whether the global background layer is visible at all.
     Box(modifier = Modifier.fillMaxSize()) {
+        // Magenta diagnostic layer (temporary)
+        androidx.compose.foundation.layout.Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = androidx.compose.ui.graphics.Color(0xFFFF00FF.toInt())),
+        )
+
+        // Then draw the intended background image over the magenta layer
         Image(
             painter = painterResource(id = R.drawable.bg),
             contentDescription = "App background",
