@@ -60,6 +60,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.android.ai.catalog.R
 import com.android.ai.catalog.domain.sampleCatalog
+import com.android.ai.catalog.ui.login.LoginScreen
 import com.google.firebase.FirebaseApp
 import kotlinx.serialization.Serializable
 
@@ -70,15 +71,33 @@ fun CatalogApp(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     var isDialogOpened by remember { mutableStateOf(false) }
 
-    NavHost(
-        navController = navController,
-        startDestination = HomeScreen,
-    ) {
+    // Draw the app background image behind all screens so it's visible regardless of destination
+    Box(modifier = Modifier.fillMaxSize()) {
+        Image(
+            painter = painterResource(id = R.drawable.bg),
+            contentDescription = "App background",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop,
+        )
+
+        NavHost(
+            navController = navController,
+            startDestination = LoginScreenRoute,
+            modifier = Modifier.fillMaxSize(),
+        ) {
+        composable<LoginScreenRoute> {
+            // When login succeeds navigate to the HomeScreen destination
+            LoginScreen(onLoggedIn = { navController.navigate(HomeScreen) })
+        }
+
         composable<HomeScreen> {
+            Log.d("CatalogApp", "HomeScreen composing - drawable ids: bg=${R.drawable.bg}")
             val topAppBarState = rememberTopAppBarState()
             val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(topAppBarState)
             Scaffold(
                 modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+                // Make scaffold containers transparent so the global background shows through
+                containerColor = Color.Transparent,
                 topBar = {
                     TwoRowsTopAppBar(
                         colors = TopAppBarDefaults.topAppBarColors(
@@ -113,12 +132,6 @@ fun CatalogApp(modifier: Modifier = Modifier) {
                     )
                 },
             ) { innerPadding ->
-                Image(
-                    painter = painterResource(id = R.drawable.img_bg_landing),
-                    contentDescription = "Background Image",
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.FillWidth,
-                )
                 LazyColumn(
                     contentPadding = innerPadding,
                     modifier = Modifier.fillMaxWidth(),
@@ -166,6 +179,9 @@ fun CatalogApp(modifier: Modifier = Modifier) {
 
 @Serializable
 object HomeScreen
+
+@Serializable
+object LoginScreenRoute
 
 @Composable
 fun AppBarPill() {
