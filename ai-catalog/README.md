@@ -1,3 +1,36 @@
+# AI Sample Catalog (ai-catalog)
+
+This subproject contains sample Android apps and UI components used for local testing and demos.
+
+## Run on emulator
+
+A helper script is provided to make it easy to start (or reuse) an emulator, build the debug APK,
+install it and launch the app.
+
+Usage
+
+1. Make the script executable (first time):
+
+```bash
+chmod +x run-on-emulator.sh
+```
+
+2. Run the script (from the `ai-catalog` directory):
+
+```bash
+./run-on-emulator.sh
+```
+
+Notes
+- By default the script uses AVD `test_device`. Override with `AVD_NAME` environment variable.
+- The script will attempt to find the `emulator` binary using `ANDROID_SDK_ROOT`, `ANDROID_HOME`, or the default `~/Android/Sdk`.
+- If no emulator is running it will start the AVD and wait for it to finish booting.
+
+Example (start a named AVD):
+
+```bash
+AVD_NAME=my_avd ./run-on-emulator.sh
+```
 # Android AI Sample Catalog
 
 ![Android AI Sample Catalog screenshots](https://developer.android.com/static/ai/assets/images/ai_catalog_screenshot_1440.png)
