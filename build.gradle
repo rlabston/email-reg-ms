@@ -2,6 +2,10 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.5.7'
     id 'io.spring.dependency-management' version '1.1.7'
+    // Centralize Kotlin and KSP plugin versions for subprojects. Using the latest
+    // published plugin versions available on Maven Central as of this check.
+    id 'org.jetbrains.kotlin.jvm' version '2.2.0' apply false
+    id 'com.google.devtools.ksp' version '2.2.0-2.0.2' apply false
 }
 
 group = 'com.technet7.microsvc'
@@ -10,8 +14,8 @@ description = 'Email Registration Microservice'
 
 java {
     toolchain {
-        // Use Java 17 for compilation to match the runtime and project expectations
-        languageVersion = JavaLanguageVersion.of(17)
+        // Use Java 25 for compilation (migrating project to Java 25 per request)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
@@ -57,6 +61,15 @@ springBoot {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+// Enable deprecation linting for test compilation so we can find and fix deprecated API usages.
+// This adds -Xlint:deprecation to the test compile task without changing production compile behavior.
+tasks.named('compileTestJava') {
+    // Gradle exposes the JavaCompile task type; add compiler args to this specific task
+    if (it.hasProperty('options')) {
+        it.options.compilerArgs = (it.options.compilerArgs ?: []) + ['-Xlint:deprecation']
+    }
 }
 
 // Include compiled frontend files (if present) into the Spring Boot jar resources

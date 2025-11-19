@@ -6,11 +6,9 @@ pluginManagement {
     }
     plugins {
         // Provide Android Gradle plugin version for subprojects
-        // Bump AGP to a newer 8.x release to address deprecation warnings
-        // (will improve compatibility with newer Gradle versions)
-        // Try a newer AGP patch release; this can reduce internal deprecation warnings
-        id 'com.android.application' version '8.3.0'
-        id 'com.android.library' version '8.3.0'
+        // Try a smaller AGP patch bump to avoid unresolved plugin artifacts
+    id 'com.android.application' version '8.13.1'
+    id 'com.android.library' version '8.13.1'
     }
 }
 

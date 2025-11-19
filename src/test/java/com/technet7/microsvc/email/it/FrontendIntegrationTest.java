@@ -10,6 +10,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class FrontendIntegrationTest {
@@ -25,8 +26,9 @@ public class FrontendIntegrationTest {
         String url = "http://localhost:" + port + "/";
         ResponseEntity<String> resp = restTemplate.getForEntity(url, String.class);
 
-        // If frontend build is present, we expect index.html (text/html) or at least HTML content
-        assertEquals(200, resp.getStatusCodeValue());
+    // If frontend build is present, we expect index.html (text/html) or at least HTML content
+    // Use HttpStatus for the assertion to avoid deprecated API ResponseEntity#getStatusCodeValue()
+    assertEquals(HttpStatus.OK, resp.getStatusCode());
         HttpHeaders headers = resp.getHeaders();
         MediaType ct = headers.getContentType();
         boolean isHtml = (ct != null && (MediaType.TEXT_HTML.includes(ct) || ct.getSubtype().contains("html")))
