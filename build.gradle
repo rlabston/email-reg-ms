@@ -14,8 +14,8 @@ description = 'Email Registration Microservice'
 
 java {
     toolchain {
-        // Use Java 25 for compilation (migrating project to Java 25 per request)
-        languageVersion = JavaLanguageVersion.of(25)
+        // Use Java 21 for compilation (requested upgrade)
+        languageVersion = JavaLanguageVersion.of(21)
     }
 }
 
