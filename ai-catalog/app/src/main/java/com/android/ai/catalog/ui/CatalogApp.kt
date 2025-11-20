@@ -19,6 +19,7 @@ import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -61,6 +62,7 @@ import androidx.navigation.compose.rememberNavController
 import com.android.ai.catalog.R
 import com.android.ai.catalog.domain.sampleCatalog
 import com.android.ai.catalog.ui.login.LoginScreen
+import com.android.ai.catalog.ui.emails.EmailListScreen
 import com.google.firebase.FirebaseApp
 import kotlinx.serialization.Serializable
 
@@ -68,6 +70,12 @@ import kotlinx.serialization.Serializable
 @Composable
 fun CatalogApp(modifier: Modifier = Modifier) {
     val context = LocalContext.current
+    
+    // Check if user is already logged in by reading persisted auth
+    val prefs = context.getSharedPreferences("auth_prefs", android.content.Context.MODE_PRIVATE)
+    val savedToken = prefs.getString("token", null)
+    val startDestination = if (savedToken.isNullOrBlank()) "login" else "home"
+    
     val navController = rememberNavController()
     var isDialogOpened by remember { mutableStateOf(false) }
 
@@ -90,82 +98,95 @@ fun CatalogApp(modifier: Modifier = Modifier) {
 
         NavHost(
             navController = navController,
-            startDestination = LoginScreenRoute,
+            startDestination = startDestination,
             modifier = Modifier.fillMaxSize(),
         ) {
-        composable<LoginScreenRoute> {
-            // When login succeeds navigate to the HomeScreen destination
-            LoginScreen(onLoggedIn = { navController.navigate(HomeScreen) })
-        }
+            composable("login") {
+                // When login succeeds navigate to the HomeScreen destination
+                LoginScreen(onLoggedIn = { 
+                    Log.d("CatalogApp", "Login successful, navigating to home")
+                    navController.navigate("home") {
+                        // Clear login screen from back stack
+                        popUpTo("login") { inclusive = true }
+                        launchSingleTop = true
+                    }
+                })
+            }
 
-        composable<HomeScreen> {
-            Log.d("CatalogApp", "HomeScreen composing - drawable ids: bg=${R.drawable.bg}")
-            val topAppBarState = rememberTopAppBarState()
-            val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(topAppBarState)
-            Scaffold(
-                modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-                // Make scaffold containers transparent so the global background shows through
-                containerColor = Color.Transparent,
-                topBar = {
-                    TwoRowsTopAppBar(
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = Color.Transparent,
-                            scrolledContainerColor = MaterialTheme.colorScheme.surface,
-                            titleContentColor = MaterialTheme.colorScheme.primary,
-                        ),
-                        navigationIcon = { AppBarPill() },
-                        title = { expanded ->
-                            if (expanded) {
-                                Text(
-                                    text = stringResource(id = R.string.top_bar_title_expanded),
-                                    style = MaterialTheme.typography.displaySmall,
-                                    color = MaterialTheme.colorScheme.onSurface,
-                                    maxLines = 2,
-                                    modifier = Modifier.padding(bottom = 12.dp),
-                                )
-                            } else {
-                                Row {
-                                    Spacer(modifier = Modifier.width(12.dp))
+            composable("home") {
+                Log.d("CatalogApp", "HomeScreen composing - drawable ids: bg=${R.drawable.bg}")
+                val topAppBarState = rememberTopAppBarState()
+                val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(topAppBarState)
+                Scaffold(
+                    modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+                    // Make scaffold containers transparent so the global background shows through
+                    containerColor = Color.Transparent,
+                    topBar = {
+                        TwoRowsTopAppBar(
+                            colors = TopAppBarDefaults.topAppBarColors(
+                                containerColor = Color.Transparent,
+                                scrolledContainerColor = MaterialTheme.colorScheme.surface,
+                                titleContentColor = MaterialTheme.colorScheme.primary,
+                            ),
+                            navigationIcon = { AppBarPill() },
+                            title = { expanded ->
+                                if (expanded) {
                                     Text(
-                                        text = stringResource(id = R.string.top_bar_title),
-                                        style = MaterialTheme.typography.titleLarge,
+                                        text = stringResource(id = R.string.top_bar_title_expanded),
+                                        style = MaterialTheme.typography.displaySmall,
                                         color = MaterialTheme.colorScheme.onSurface,
-                                        maxLines = 1,
-                                        modifier = Modifier.align(Alignment.CenterVertically),
+                                        maxLines = 2,
+                                        modifier = Modifier.padding(bottom = 12.dp),
                                     )
+                                } else {
+                                    Row {
+                                        Spacer(modifier = Modifier.width(12.dp))
+                                        Text(
+                                            text = stringResource(id = R.string.top_bar_title),
+                                            style = MaterialTheme.typography.titleLarge,
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            maxLines = 1,
+                                            modifier = Modifier.align(Alignment.CenterVertically),
+                                        )
+                                    }
+                                }
+                            },
+                            scrollBehavior = scrollBehavior,
+                        )
+                    },
+                ) { innerPadding ->
+                    LazyColumn(
+                        contentPadding = innerPadding,
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    ) {
+                        // Email registration + list screen at top of Home
+                        item {
+                            EmailListScreen()
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
+                        items(sampleCatalog) {
+                            val onClick = {
+                                if (it.needsFirebase && !isFirebaseInitialized()) {
+                                    isDialogOpened = true
+                                } else {
+                                    navController.navigate(it.route)
                                 }
                             }
-                        },
-                        scrollBehavior = scrollBehavior,
-                    )
-                },
-            ) { innerPadding ->
-                LazyColumn(
-                    contentPadding = innerPadding,
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    items(sampleCatalog) {
-                        val onClick = {
-                            if (it.needsFirebase && !isFirebaseInitialized()) {
-                                isDialogOpened = true
+                            if (it.isFeatured) {
+                                CatalogWideCard(catalogItem = it, onClick = onClick)
                             } else {
-                                navController.navigate(it.route)
+                                CatalogRowCard(catalogItem = it, onClick = onClick)
                             }
-                        }
-                        if (it.isFeatured) {
-                            CatalogWideCard(catalogItem = it, onClick = onClick)
-                        } else {
-                            CatalogRowCard(catalogItem = it, onClick = onClick)
                         }
                     }
                 }
             }
-        }
-        sampleCatalog.forEach {
-            val catalogItem = it
-            composable(catalogItem.route) {
-                catalogItem.sampleEntryScreen()
+            sampleCatalog.forEach {
+                val catalogItem = it
+                composable(catalogItem.route) {
+                    catalogItem.sampleEntryScreen()
+                }
             }
         }
     }
@@ -185,11 +206,6 @@ fun CatalogApp(modifier: Modifier = Modifier) {
     }
 }
 
-@Serializable
-object HomeScreen
-
-@Serializable
-object LoginScreenRoute
 
 @Composable
 fun AppBarPill() {

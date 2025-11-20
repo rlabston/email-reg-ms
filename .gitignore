@@ -67,6 +67,12 @@ local.properties
 captures/
 .cxx/
 
+# Ignore assistant/dev screenshots and quick captures created during testing
+# These are saved at the repo root; keep them out of version control.
+/ai-catalog*.png
+/login*.png
+/*_screen*.png
+
 ### Python (utility scripts / venvs) ###
 __pycache__/
 *.pyc

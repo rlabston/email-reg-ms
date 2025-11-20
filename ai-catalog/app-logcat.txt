@@ -1,0 +1,200 @@
+--------- beginning of main
+11-19 04:27:44.940 I/lowmemorykiller(  148): Using psi monitors for memory pressure detection
+11-19 04:27:44.941 I/lowmemorykiller(  148): Process polling is supported
+11-19 04:27:44.942 I/lowmemorykiller(  148): Process reaper initialized with 2 threads in the pool
+11-19 04:27:44.980 I/dlkm_loader(  142): Loaded kernel module /vendor/lib/modules/cfg80211.ko
+11-19 04:27:44.981 I/dlkm_loader(  142): Loading module /vendor/lib/modules/dummy-cpufreq.ko with args ''
+11-19 04:27:45.002 I/SELinux (  149): SELinux: Loaded service_contexts from:
+11-19 04:27:45.002 I/SELinux (  149):     /system/etc/selinux/plat_service_contexts
+11-19 04:27:45.002 I/SELinux (  149):     /system_ext/etc/selinux/system_ext_service_contexts
+11-19 04:27:45.002 I/SELinux (  149):     /vendor/etc/selinux/vendor_service_contexts
+--------- beginning of kernel
+11-19 04:27:37.258 I/        (    0): Linux version 5.15.119-android13-8-00034-gd34029c8258b-ab10871489 (build-user@build-host) (Android (8508608, based on r450784e) clang version 14.0.7 (https://android.googlesource.com/toolchain/llvm-project 4c603efb0cca074e9238af8b4106c30add4418f6), LLD 14.0.7) #1 SMP PREEMPT Wed Sep 27 18:42:24 UTC 2023
+11-19 04:27:37.258 I/Command line(    0): 8250.nr_uarts=1 clocksource=pit no_timer_check console=0 loop.max_part=7 ramoops.mem_address=0xff018000 ramoops.mem_size=0x10000 memmap=0x10000$0xff018000 printk.devkmsg=on bootconfig mac80211_hwsim.radios=0
+11-19 04:27:37.258 I/x86/fpu (    0): x87 FPU will use FXSAVE
+11-19 04:27:37.258 I/signal  (    0): max sigframe size: 1440
+11-19 04:27:37.258 I/        (    0): BIOS-provided physical RAM map:
+11-19 04:27:37.258 I/BIOS-e820(    0): [mem 0x0000000000000000-0x000000000009fbff] usable
+11-19 04:27:37.258 I/BIOS-e820(    0): [mem 0x000000000009fc00-0x000000000009ffff] reserved
+11-19 04:27:37.258 I/BIOS-e820(    0): [mem 0x00000000000f0000-0x00000000000fffff] reserved
+11-19 04:27:37.258 I/BIOS-e820(    0): [mem 0x0000000000100000-0x000000007ffd5fff] usable
+11-19 04:27:37.258 I/BIOS-e820(    0): [mem 0x000000007ffd6000-0x000000007fffffff] reserved
+11-19 04:27:37.258 I/BIOS-e820(    0): [mem 0x00000000feffc000-0x00000000feffffff] reserved
+11-19 04:27:37.258 I/BIOS-e820(    0): [mem 0x00000000fffc0000-0x00000000ffffffff] reserved
+11-19 04:27:37.258 I/        (    0): Stack Depot is disabled
+11-19 04:27:37.258 I/        (    0): NX (Execute Disable) protection: active
+11-19 04:27:37.258 I/        (    0): user-defined physical RAM map:
+11-19 04:27:37.258 I/user    (    0): [mem 0x0000000000000000-0x000000000009fbff] usable
+11-19 04:27:37.258 I/user    (    0): [mem 0x000000000009fc00-0x000000000009ffff] reserved
+11-19 04:27:37.258 I/user    (    0): [mem 0x00000000000f0000-0x00000000000fffff] reserved
+11-19 04:27:37.258 I/user    (    0): [mem 0x0000000000100000-0x000000007ffd5fff] usable
+11-19 04:27:37.258 I/user    (    0): [mem 0x000000007ffd6000-0x000000007fffffff] reserved
+11-19 04:27:37.258 I/user    (    0): [mem 0x00000000feffc000-0x00000000feffffff] reserved
+11-19 04:27:37.258 I/user    (    0): [mem 0x00000000ff018000-0x00000000ff027fff] reserved
+11-19 04:27:37.258 I/user    (    0): [mem 0x00000000fffc0000-0x00000000ffffffff] reserved
+11-19 04:27:37.258 I/        (    0): SMBIOS 2.8 present.
+11-19 04:27:37.258 I/DMI     (    0): QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.11.1-0-g0551a4be2c-prebuilt.qemu-project.org 04/01/2014
+11-19 04:27:37.258 I/Hypervisor detected(    0): KVM
+11-19 04:27:37.258 I/kvm-clock(    0): Using msrs 4b564d01 and 4b564d00
+11-19 04:27:37.258 I/kvm-clock(    0): cpu 0, msr 8fc8001, primary cpu clock
+11-19 04:27:37.258 I/kvm-clock(    0): using sched offset of 678403057 cycles
+11-19 04:27:37.258 I/clocksource(    0): kvm-clock: mask: 0xffffffffffffffff max_cycles: 0x1cd42e4dffb, max_idle_ns: 881590591483 ns
+11-19 04:27:37.258 I/tsc     (    0): Detected 2399.994 MHz processor
+11-19 04:27:37.259 D/e820    (    0): update [mem 0x00000000-0x00000fff] usable ==> reserved
+11-19 04:27:37.259 D/e820    (    0): remove [mem 0x000a0000-0x000fffff] usable
+11-19 04:27:37.259 I/        (    0): last_pfn = 0x7ffd6 max_arch_pfn = 0x400000000
+11-19 04:27:37.259 I/x86/PAT (    0): PAT not supported by the CPU.
+11-19 04:27:37.259 I/x86/PAT (    0): Configuration [0-7]: WB  WT  UC- UC  WB  WT  UC- UC
+11-19 04:27:37.268 I/        (    0): found SMP MP-table at [mem 0x000f5ac0-0x000f5acf]
+11-19 04:27:37.269 I/RAMDISK (    0): [mem 0x7fe2b000-0x7ffcffff]
+11-19 04:27:37.269 I/ACPI    (    0): Early table checksum verification disabled
+11-19 04:27:37.269 I/ACPI    (    0): RSDP 0x00000000000F58C0 000014 (v00 BOCHS )
+11-19 04:27:37.269 I/ACPI    (    0): RSDT 0x000000007FFE1C02 000030 (v01 BOCHS  BXPCRSDT 00000001 BXPC 00000001)
+11-19 04:27:37.269 I/ACPI    (    0): FACP 0x000000007FFE1AC6 000074 (v01 BOCHS  BXPCFACP 00000001 BXPC 00000001)
+11-19 04:27:37.269 I/ACPI    (    0): DSDT 0x000000007FFE0040 001A86 (v01 BOCHS  BXPCDSDT 00000001 BXPC 00000001)
+11-19 04:27:37.269 I/ACPI    (    0): FACS 0x000000007FFE0000 000040
+11-19 04:27:37.269 I/ACPI    (    0): APIC 0x000000007FFE1B3A 000090 (v01 BOCHS  BXPCAPIC 00000001 BXPC 00000001)
+11-19 04:27:37.269 I/ACPI    (    0): HPET 0x000000007FFE1BCA 000038 (v01 BOCHS  BXPCHPET 00000001 BXPC 00000001)
+11-19 04:27:37.269 I/ACPI    (    0): Reserving FACP table memory at [mem 0x7ffe1ac6-0x7ffe1b39]
+11-19 04:27:37.269 I/ACPI    (    0): Reserving DSDT table memory at [mem 0x7ffe0040-0x7ffe1ac5]
+11-19 04:27:37.269 I/ACPI    (    0): Reserving FACS table memory at [mem 0x7ffe0000-0x7ffe003f]
+11-19 04:27:37.269 I/ACPI    (    0): Reserving APIC table memory at [mem 0x7ffe1b3a-0x7ffe1bc9]
+11-19 04:27:37.269 I/ACPI    (    0): Reserving HPET table memory at [mem 0x7ffe1bca-0x7ffe1c01]
+11-19 04:27:37.270 I/Zone ranges(    0):  
+11-19 04:27:37.270 I/        (    0): DMA32    [mem 0x0000000000001000-0x000000007ffd5fff]
+11-19 04:27:37.270 I/        (    0): Normal   empty
+11-19 04:27:37.270 I/        (    0): Movable zone start for each node
+11-19 04:27:37.270 I/        (    0): Early memory node ranges
+11-19 04:27:37.270 I/node   0(    0): [mem 0x0000000000001000-0x000000000009efff]
+11-19 04:27:37.270 I/node   0(    0): [mem 0x0000000000100000-0x000000007ffd5fff]
+11-19 04:27:37.270 I/        (    0): Initmem setup node 0 [mem 0x0000000000001000-0x000000007ffd5fff]
+11-19 04:27:37.271 I/        (    0): On node 0, zone DMA32: 1 pages in unavailable ranges
+11-19 04:27:37.290 I/        (    0): On node 0, zone DMA32: 97 pages in unavailable ranges
+11-19 04:27:37.290 I/        (    0): On node 0, zone DMA32: 42 pages in unavailable ranges
+11-19 04:27:37.295 I/ACPI    (    0): LAPIC_NMI (acpi_id[0xff] dfl dfl lint[0x1])
+11-19 04:27:37.295 I/IOAPIC[0](    0): apic_id 0, version 17, address 0xfec00000, GSI 0-23
+11-19 04:27:37.295 I/ACPI    (    0): INT_SRC_OVR (bus 0 bus_irq 0 global_irq 2 dfl dfl)
+11-19 04:27:37.295 I/ACPI    (    0): INT_SRC_OVR (bus 0 bus_irq 5 global_irq 5 high level)
+11-19 04:27:37.295 I/ACPI    (    0): INT_SRC_OVR (bus 0 bus_irq 9 global_irq 9 high level)
+11-19 04:27:37.295 I/ACPI    (    0): INT_SRC_OVR (bus 0 bus_irq 10 global_irq 10 high level)
+11-19 04:27:37.295 I/ACPI    (    0): INT_SRC_OVR (bus 0 bus_irq 11 global_irq 11 high level)
+11-19 04:27:37.295 I/ACPI    (    0): Using ACPI (MADT) for SMP configuration information
+11-19 04:27:37.295 I/ACPI    (    0): HPET id: 0x8086a201 base: 0xfed00000
+11-19 04:27:37.295 I/        (    0): TSC deadline timer available
+11-19 04:27:37.295 I/smpboot (    0): Allowing 4 CPUs, 0 hotplug CPUs
+11-19 04:27:37.295 I/PM      (    0): hibernation: Registered nosave memory: [mem 0x00000000-0x00000fff]
+11-19 04:27:37.295 I/PM      (    0): hibernation: Registered nosave memory: [mem 0x0009f000-0x0009ffff]
+11-19 04:27:37.295 I/PM      (    0): hibernation: Registered nosave memory: [mem 0x000a0000-0x000effff]
+11-19 04:27:37.295 I/PM      (    0): hibernation: Registered nosave memory: [mem 0x000f0000-0x000fffff]
+11-19 04:27:37.295 I/        (    0): [mem 0x80000000-0xfeffbfff] available for PCI devices
+11-19 04:27:37.295 I/        (    0): Booting paravirtualized kernel on KVM
+11-19 04:27:37.295 I/clocksource(    0): refined-jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645519600211568 ns
+11-19 04:27:37.296 I/Load bootconfig(    0): 1832 bytes 67 nodes
+11-19 04:27:37.296 I/setup_percpu(    0): NR_CPUS:32 nr_cpumask_bits:32 nr_cpu_ids:4 nr_node_ids:1
+11-19 04:27:37.298 I/percpu  (    0): Embedded 55 pages/cpu s187136 r8192 d29952 u524288
+11-19 04:27:37.298 D/pcpu-alloc(    0): s187136 r8192 d29952 u524288 alloc=1*2097152
+11-19 04:27:37.298 D/pcpu-alloc(    0): [0] 0 1 2 3
+11-19 04:27:37.298 I/kvm-guest(    0): stealtime: cpu 0, msr 7dc1c340
+11-19 04:27:37.298 I/        (    0): Built 1 zonelists, mobility grouping on.  Total pages: 515798
+11-19 04:27:37.298 I/        (    0): Kernel command line: stack_depot_disable=on cgroup_disable=pressure 8250.nr_uarts=1 clocksource=pit no_timer_check console=0 loop.max_part=7 ramoops.mem_address=0xff018000 ramoops.mem_size=0x10000 memmap=0x10000$0xff018000 printk.devkmsg=on bootconfig mac80211_hwsim.radios=0
+11-19 04:27:37.298 I/cgroup  (    0): Disabling pressure control group feature
+11-19 04:27:37.299 I/        (    0): Dentry cache hash table entries: 262144 (order: 9, 2097152 bytes, linear)
+11-19 04:27:37.300 I/        (    0): Inode-cache hash table entries: 131072 (order: 8, 1048576 bytes, linear)
+11-19 04:27:37.300 I/mem auto-init(    0): stack:all(zero), heap alloc:on, heap free:off
+11-19 04:27:37.307 I/Memory  (    0): 2007444K/2096592K available (24595K kernel code, 2026K rwdata, 16360K rodata, 1356K init, 2352K bss, 88888K reserved, 0K cma-reserved)
+11-19 04:27:37.308 I/SLUB    (    0): HWalign=64, Order=0-3, MinObjects=0, CPUs=4, Nodes=1
+11-19 04:27:37.308 I/        (    0): Kernel/User page tables isolation: enabled
+11-19 04:27:37.308 I/rcu     (    0): Preemptible hierarchical RCU implementation.
+11-19 04:27:37.308 I/rcu     (    0): RCU event tracing is enabled.
+11-19 04:27:37.308 I/rcu     (    0): RCU dyntick-idle grace-period acceleration is enabled.
+11-19 04:27:37.308 I/rcu     (    0): RCU restricting CPUs from NR_CPUS=32 to nr_cpu_ids=4.
+11-19 04:27:37.308 I/rcu     (    0): RCU priority boosting: priority 1 delay 500 ms.
+11-19 04:27:37.308 I/        (    0): Trampoline variant of Tasks RCU enabled.
+11-19 04:27:37.308 I/        (    0): Tracing variant of Tasks RCU enabled.
+11-19 04:27:37.308 I/rcu     (    0): RCU calculated value of scheduler-enlistment delay is 25 jiffies.
+11-19 04:27:37.308 I/rcu     (    0): Adjusting geometry for rcu_fanout_leaf=16, nr_cpu_ids=4
+11-19 04:27:37.309 I/NR_IRQS (    0): 4352, nr_irqs: 456, preallocated irqs: 16
+11-19 04:27:37.309 I/rcu     (    0): Offload RCU callbacks from CPUs: (none).
+11-19 04:27:37.309 I/kfence  (    0): initialized - using 524288 bytes for 63 objects at 0x(____ptrval____)-0x(____ptrval____)
+11-19 04:27:37.678 I/printk  (    0): console [ttyS0] enabled
+11-19 04:27:37.680 I/ACPI    (    0): Core revision 20210730
+11-19 04:27:37.683 I/clocksource(    0): hpet: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604467 ns
+11-19 04:27:37.688 I/APIC    (    0): Switch to symmetric I/O mode setup
+11-19 04:27:37.691 I/        (    0): x2apic enabled
+11-19 04:27:37.694 I/        (    0): Switched APIC routing to physical x2apic.
+11-19 04:27:37.703 I/..TIMER (    0): vector=0x30 apic1=0 pin1=2 apic2=-1 pin2=-1
+11-19 04:27:37.706 I/clocksource(    0): tsc-early: mask: 0xffffffffffffffff max_cycles: 0x229831eaaf8, max_idle_ns: 440795283826 ns
+11-19 04:27:37.711 I/        (    0): Calibrating delay loop (skipped) preset value.. 4799.98 BogoMIPS (lpj=9599976)
+11-19 04:27:37.715 I/pid_max (    0): default: 32768 minimum: 301
+11-19 04:27:37.719 I/LSM     (    0): Security Framework initializing
+11-19 04:27:37.723 I/SELinux (    0): Initializing.
+11-19 04:27:37.725 I/        (    0): Mount-cache hash table entries: 4096 (order: 3, 32768 bytes, linear)
+11-19 04:27:37.727 I/        (    0): Mountpoint-cache hash table entries: 4096 (order: 3, 32768 bytes, linear)
+11-19 04:27:37.735 I/        (    0): Last level iTLB entries: 4KB 0, 2MB 0, 4MB 0
+11-19 04:27:37.738 I/        (    0): Last level dTLB entries: 4KB 0, 2MB 0, 4MB 0, 1GB 0
+11-19 04:27:37.739 I/Spectre V1(    0): Mitigation: usercopy/swapgs barriers and __user pointer sanitization
+11-19 04:27:37.743 I/Spectre V2(    0): Mitigation: Retpolines
+11-19 04:27:37.747 I/Spectre V2(    0): Spectre v2 / SpectreRSB mitigation: Filling RSB on context switch
+11-19 04:27:37.751 I/Spectre V2(    0): Spectre v2 / SpectreRSB : Filling RSB on VMEXIT
+11-19 04:27:37.755 I/        (    0): Speculative Store Bypass: Vulnerable
+11-19 04:27:37.757 I/MDS     (    0): Vulnerable: Clear CPU buffers attempted, no microcode
+11-19 04:27:37.759 I/        (    0): MMIO Stale Data: Unknown: No mitigations
+11-19 04:27:37.769 I/        (    0): Freeing SMP alternatives memory: 120K
+11-19 04:27:37.771 I/smpboot (    0): CPU0: Intel Android virtual processor (family: 0x6, model: 0x6, stepping: 0x3)
+11-19 04:27:37.775 I/Performance Events(    0): PMU not available due to virtualization, using software events only.
+11-19 04:27:37.779 I/rcu     (    0): Hierarchical SRCU implementation.
+11-19 04:27:37.782 I/dyndbg  (    0): Ignore empty _ddebug table in a CONFIG_DYNAMIC_DEBUG_CORE build
+11-19 04:27:37.783 I/smp     (    0): Bringing up secondary CPUs ...
+11-19 04:27:37.786 I/        (    0): x86: Booting SMP configuration:
+11-19 04:27:37.787 I/        (    0): .... node  #0, CPUs:      #1
+11-19 04:27:37.648 I/kvm-clock(    0): cpu 1, msr 8fc8041, secondary cpu clock
+11-19 04:27:37.798 I/kvm-guest(    0): stealtime: cpu 1, msr 7dc9c340
+11-19 04:27:37.808 W/        (    0): #2
+11-19 04:27:37.648 I/kvm-clock(    0): cpu 2, msr 8fc8081, secondary cpu clock
+11-19 04:27:37.815 I/kvm-guest(    0): stealtime: cpu 2, msr 7dd1c340
+11-19 04:27:37.819 W/        (    0): #3
+11-19 04:27:37.648 I/kvm-clock(    0): cpu 3, msr 8fc80c1, secondary cpu clock
+11-19 04:27:37.827 I/kvm-guest(    0): stealtime: cpu 3, msr 7dd9c340
+11-19 04:27:37.835 I/smp     (    0): Brought up 1 node, 4 CPUs
+11-19 04:27:37.839 I/smpboot (    0): Max logical packages: 1
+11-19 04:27:37.841 I/smpboot (    0): Total of 4 processors activated (19199.95 BogoMIPS)
+11-19 04:27:37.847 I/x86/mm  (    0): Memory block size: 128MB
+11-19 04:27:37.850 I/clocksource(    0): jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns
+11-19 04:27:37.851 I/        (    0): futex hash table entries: 1024 (order: 4, 65536 bytes, linear)
+11-19 04:27:37.855 I/NET     (    0): Registered PF_NETLINK/PF_ROUTE protocol family
+11-19 04:27:37.858 I/audit   (    0): initializing netlink subsys (disabled)
+11-19 04:27:45.018 I/dlkm_loader(  142): Loaded kernel module /vendor/lib/modules/dummy-cpufreq.ko
+11-19 04:27:45.018 I/dlkm_loader(  142): Loading module /vendor/lib/modules/dummy_hcd.ko with args ''
+11-19 04:27:45.022 I/hwservicemanager(  150): getFrameworkHalManifest: Reading VINTF information.
+11-19 04:27:37.473 W/auditd  (  147): type=2000 audit(0.0:1): state=initialized audit_enabled=0 res=1
+11-19 04:27:37.859 I/ramoops (    0): using module parameters
+11-19 04:27:37.867 I/printk  (    0): console [ramoops-1] enabled
+11-19 04:27:37.867 I/pstore  (    0): Registered ramoops as persistent store backend
+11-19 04:27:37.870 I/ramoops (    0): using 0x10000@0xff018000, ecc: 0
+11-19 04:27:37.871 I/thermal_sys(    0): Registered thermal governor 'step_wise'
+11-19 04:27:37.871 I/thermal_sys(    0): Registered thermal governor 'user_space'
+11-19 04:27:37.874 I/cpuidle (    0): using governor menu
+11-19 04:27:37.878 I/ACPI    (    0): bus type PCI registered
+11-19 04:27:37.879 I/PCI     (    0): Using configuration type 1 for base access
+11-19 04:27:37.885 I/kprobes (    0): kprobe jump-optimization is enabled. All kprobes are optimized if possible.
+11-19 04:27:37.891 I/cryptd  (    0): max_cpu_qlen set to 1000
+11-19 04:27:37.893 I/ACPI    (    0): Added _OSI(Module Device)
+11-19 04:27:37.899 I/ACPI    (    0): Added _OSI(Processor Device)
+11-19 04:27:37.903 I/ACPI    (    0): Added _OSI(3.0 _SCP Extensions)
+11-19 04:27:37.907 I/ACPI    (    0): Added _OSI(Processor Aggregator Device)
+11-19 04:27:37.911 I/ACPI    (    0): Added _OSI(Linux-Dell-Video)
+11-19 04:27:37.915 I/ACPI    (    0): Added _OSI(Linux-Lenovo-NV-HDMI-Audio)
+11-19 04:27:37.923 I/ACPI    (    0): Added _OSI(Linux-HPI-Hybrid-Graphics)
+11-19 04:27:37.928 I/ACPI    (    0): 1 ACPI AML tables successfully acquired and loaded
+11-19 04:27:37.939 I/ACPI    (    0): Interpreter enabled
+11-19 04:27:37.943 I/ACPI    (    0): PM: (supports S0 S3 S4 S5)
+11-19 04:27:37.945 I/ACPI    (    0): Using IOAPIC for interrupt routing
+11-19 04:27:37.947 I/PCI     (    0): Using host bridge windows from ACPI; if necessary, use "pci=nocrs" and report a bug
+11-19 04:27:37.951 I/ACPI    (    0): Enabled 2 GPEs in block 00 to 0F
+11-19 04:27:37.958 I/ACPI    (    0): PCI Root Bridge [PCI0] (domain 0000 [bus 00-ff])
+11-19 04:27:37.959 I/acpi PNP0A03(    0): 00: _OSC: OS supports [ASPM ClockPM Segments MSI HPX-Type3]
+11-19 04:27:37.963 W/acpi PNP0A03(    0): 00: fail to add MMCONFIG information, can't access extended PCI configuration space under this bridge.
+11-19 04:27:37.967 I/        (    0): PCI host bridge to bus 0000:00
+11-19 04:27:37.969 I/pci_bus 0000(    0): 00: root bus resource [io  0x0000-0x0cf7 window]
+11-19 04:27:37.971 I/pci_bus 0000(    0): 00: root bus resource [io  0x0d00-0xffff window]
+11-19 04:27:37.974 I/pci_bus 0000(    0): 00: root bus resource [mem 0x000a0000-0x000bffff window]

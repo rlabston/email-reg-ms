@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.technet7.microsvc.email.dto.EmailRegistrationResponse;
@@ -16,6 +18,7 @@ public class EmailRegistrationService {
     
     private final EmailRegistrationRepository emailRepository;
     private final PasswordEncoder passwordEncoder;
+    private static final Logger log = LoggerFactory.getLogger(EmailRegistrationService.class);
     public EmailRegistrationService(EmailRegistrationRepository emailRepository, PasswordEncoder passwordEncoder) {
         this.emailRepository = emailRepository;
         this.passwordEncoder = passwordEncoder;
@@ -48,10 +51,28 @@ public class EmailRegistrationService {
 
     public Optional<RegisteredEmail> authenticate(String email, String password) {
         Optional<RegisteredEmail> userOpt = emailRepository.findByEmail(email);
-        if (userOpt.isEmpty()) return Optional.empty();
+        if (userOpt.isEmpty()) {
+            log.warn("Auth failed: email not found: {}", email);
+            return Optional.empty();
+        }
         RegisteredEmail user = userOpt.get();
-        boolean matches = passwordEncoder.matches(password, user.getPasswordHash());
-        if (!matches) return Optional.empty();
+        // Guard against null/blank hashes to avoid IllegalArgumentException from encoder
+        String storedHash = user.getPasswordHash();
+        if (storedHash == null || storedHash.isBlank()) {
+            log.warn("Auth failed: empty password hash for email {}", email);
+            return Optional.empty();
+        }
+        boolean matches = false;
+        try {
+            matches = passwordEncoder.matches(password, storedHash);
+        } catch (Exception ex) {
+            log.error("Auth error comparing password for {}: {}", email, ex.getMessage());
+            return Optional.empty();
+        }
+        if (!matches) {
+            log.warn("Auth failed: password mismatch for {}", email);
+            return Optional.empty();
+        }
 
         return Optional.of(user);
     }

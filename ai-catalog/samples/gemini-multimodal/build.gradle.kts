@@ -49,14 +49,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.15"
-    }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
 }
 
+// Configure Kotlin JVM target in a backward/forward-compatible way.
 dependencies {
 
     implementation(libs.androidx.core.ktx)

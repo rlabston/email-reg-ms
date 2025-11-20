@@ -26,26 +26,27 @@ android {
     compileSdk = 35
 
     defaultConfig {
-        minSdk = 24
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
-            )
+            } catch (_: Throwable) {
+                try {
+dependencies {
+                    val setMethod2 = compilerOptions.javaClass.methods.firstOrNull { it.name == "setJvmTarget" && it.parameterTypes.firstOrNull() == String::class.java }
+                    setMethod2?.invoke(compilerOptions, "17")
+                } catch (_: Throwable) {
+                }
+            }
+        } else {
+            try {
+                val compileTaskClass = org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java
+                if (compileTaskClass.isInstance(this)) {
+                    val kotlinOptions = compileTaskClass.getMethod("getKotlinOptions").invoke(this)
+                    kotlinOptions.javaClass.getMethod("setJvmTarget", String::class.java).invoke(kotlinOptions, "17")
+                }
+            } catch (_: Throwable) {
+            }
         }
+    } catch (_: Throwable) {
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
+}
     buildFeatures {
         compose = true
     }

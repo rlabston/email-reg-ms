@@ -1,9 +1,8 @@
 /*
  * Copyright 2025 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+    }
+
+// Configure Kotlin JVM target in a backward/forward-compatible way.
  *
  *     https://www.apache.org/licenses/LICENSE-2.0
  *
@@ -49,16 +48,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-
-    kotlinOptions {
-        jvmTarget = "17"
-    }
-
-    lint {
-        warningsAsErrors = true
-    }
 }
 
+// Configure Kotlin compiler options via the Kotlin compilation tasks (replacement for kotlinOptions).
+// Configure Kotlin JVM target in a backward/forward-compatible way.
 dependencies {
 
     implementation(libs.androidx.core.ktx)

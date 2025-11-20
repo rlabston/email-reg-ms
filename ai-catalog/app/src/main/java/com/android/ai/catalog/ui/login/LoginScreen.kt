@@ -3,10 +3,12 @@ package com.android.ai.catalog.ui.login
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,6 +19,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+// NOTE: Using a Box background instead of TextFieldDefaults.outlinedTextFieldColors (not available in current Compose version)
 import androidx.compose.material3.Text
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,11 +35,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import com.android.ai.catalog.R
 import com.android.ai.catalog.network.ApiService
 import kotlinx.coroutines.launch
 
@@ -56,27 +62,48 @@ fun LoginScreen(onLoggedIn: () -> Unit = {}) {
     var result by remember { mutableStateOf(if (com.android.ai.catalog.BuildConfig.DEBUG) "Sample server response: 200 OK" else null) }
     var showRegister by remember { mutableStateOf(false) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+    // Draw the chosen background image behind the login form so the image is visible
+    Box(
+        modifier = Modifier.fillMaxSize(),
     ) {
+        Image(
+            painter = painterResource(id = R.drawable.bg),
+            contentDescription = "Background",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop,
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(text = "AI Catalog — Debug Login", style = MaterialTheme.typography.headlineSmall)
 
-        OutlinedTextField(
+        Box(modifier = Modifier
+            .padding(top = 12.dp)
+            .fillMaxWidth()
+            .padding(horizontal = 0.dp)
+            .background(Color.White)) {
+            OutlinedTextField(
             value = email,
             onValueChange = { email = it },
             label = { Text("Email", color = Color.Black) },
             singleLine = true,
-            modifier = Modifier.padding(top = 12.dp),
+            modifier = Modifier.fillMaxWidth(),
             textStyle = MaterialTheme.typography.bodyLarge.copy(color = Color.Black),
-        )
+            )
+        }
 
-        OutlinedTextField(
+        Box(modifier = Modifier
+            .padding(top = 8.dp)
+            .fillMaxWidth()
+            .background(Color.White)) {
+            OutlinedTextField(
             value = password,
             onValueChange = { password = it },
             label = { Text("Password", color = Color.Black) },
@@ -88,19 +115,25 @@ fun LoginScreen(onLoggedIn: () -> Unit = {}) {
                     Icon(imageVector = icon, contentDescription = if (passwordVisible) "Hide password" else "Show password", tint = Color.Black)
                 }
             },
-            modifier = Modifier.padding(top = 8.dp),
+            modifier = Modifier.fillMaxWidth(),
             textStyle = MaterialTheme.typography.bodyLarge.copy(color = Color.Black),
-        )
+            )
+        }
 
         if (showRegister) {
-            OutlinedTextField(
+            Box(modifier = Modifier
+                .padding(top = 8.dp)
+                .fillMaxWidth()
+                .background(Color.White)) {
+                OutlinedTextField(
                 value = username,
                 onValueChange = { username = it },
                 label = { Text("Username", color = Color.Black) },
                 singleLine = true,
-                modifier = Modifier.padding(top = 8.dp),
+                modifier = Modifier.fillMaxWidth(),
                 textStyle = MaterialTheme.typography.bodyLarge.copy(color = Color.Black),
-            )
+                )
+            }
         }
 
         result?.let {
@@ -208,6 +241,7 @@ fun LoginScreen(onLoggedIn: () -> Unit = {}) {
                 Text(text = "Skip to Home (debug)")
             }
         }
+    }
     }
 }
 

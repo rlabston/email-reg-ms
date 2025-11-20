@@ -21,7 +21,6 @@ public class GatewayConfig {
         // Forward everything to backendBase preserving path and query
         return builder.routes()
                 .route("all_to_backend", r -> r.path("/**")
-                        .filters(f -> f.rewritePath("/(?<remaining>.*)", "/${remaining}"))
                         .uri(backendBase))
                 .build();
     }

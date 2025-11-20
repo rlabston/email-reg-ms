@@ -1,0 +1,218 @@
+11-19 06:35:28.312   524   560 I ActivityManager: Start proc 1409:com.google.android.gms.persistent/u0a120 for service {com.google.android.gms/com.google.android.gms.chimera.PersistentApiService}
+11-19 06:35:58.833  1739  1739 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.credential.manager.service.firstparty.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.GmsApiService }
+11-19 06:35:58.833  1739  1739 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.credential.manager.service.firstparty.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.GmsApiService }
+11-19 06:36:00.455  1739  1739 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.potokens.service.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.GmsApiService }
+11-19 06:36:00.455  1739  1739 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.potokens.service.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.GmsApiService }
+11-19 06:36:04.206  1409  1447 I GmsApiChimeraSvc: Using MissingApiServiceBroker for com.google.android.gms.herrevad.services.LightweightNetworkQualityAndroidService.START due to missing BoundService implementation
+11-19 06:36:04.574  1409  1409 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.clearcut.service.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentDirectBootAwareApiService }
+11-19 06:36:04.574  1409  1409 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.clearcut.service.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentDirectBootAwareApiService }
+11-19 06:36:04.576  1409  1409 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.pseudonymous.service.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:36:04.576  1409  1409 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.pseudonymous.service.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:36:04.581  1409  1409 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.phenotype.service.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:36:04.581  1409  1409 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.phenotype.service.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:36:04.582  1409  1409 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.usagereporting.service.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentDirectBootAwareApiService }
+11-19 06:36:04.582  1409  1409 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.usagereporting.service.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentDirectBootAwareApiService }
+11-19 06:36:04.981  1409  1409 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.scheduler.ACTION_PROXY_SCHEDULE dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:36:04.982  1409  1409 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.scheduler.ACTION_PROXY_SCHEDULE dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:36:05.524  1409  1409 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.libs.gmscorelogger.service.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentDirectBootAwareApiService }
+11-19 06:36:05.524  1409  1409 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.libs.gmscorelogger.service.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentDirectBootAwareApiService }
+11-19 06:36:05.534  1409  1409 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.auth.account.workaccount.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:36:05.534  1409  1409 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.auth.account.workaccount.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:36:06.621  1739  1739 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.findmydevice.spot.service.management.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.GmsApiService }
+11-19 06:36:06.621  1739  1739 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.findmydevice.spot.service.management.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.GmsApiService }
+11-19 06:36:06.640  1739  1739 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.findmydevice.spot.service.locationreport.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.GmsApiService }
+11-19 06:36:06.640  1739  1739 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.findmydevice.spot.service.locationreport.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.GmsApiService }
+11-19 06:36:06.913  1739  1739 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.chimera.container.moduleinstall.ModuleInstallService.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.GmsApiService }
+11-19 06:36:06.913  1739  1739 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.chimera.container.moduleinstall.ModuleInstallService.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.GmsApiService }
+11-19 06:36:12.413  1739  1739 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.findmydevice.spot.service.locationreport.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.GmsApiService }
+11-19 06:36:12.413  1739  1739 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.findmydevice.spot.service.management.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.GmsApiService }
+11-19 06:36:13.998  1409  1409 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.icing.LIGHTWEIGHT_INDEX_SERVICE dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:36:13.998  1409  1409 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.icing.LIGHTWEIGHT_INDEX_SERVICE dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:36:16.755  1409  1409 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.tapandpay.service.BIND dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:36:16.755  1409  1409 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.tapandpay.service.BIND dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:36:16.759  1739  1739 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.pay.service.BIND dat=chimera-action:/... cmp=com.google.android.gms/.chimera.GmsApiService }
+11-19 06:36:16.759  1739  1739 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.pay.service.BIND dat=chimera-action:/... cmp=com.google.android.gms/.chimera.GmsApiService }
+11-19 06:36:18.786  1739  1739 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.potokens.service.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.GmsApiService }
+11-19 06:36:20.626  1409  1409 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.pseudonymous.service.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:36:20.679  1409  1409 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.auth.account.workaccount.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:36:21.167  1409  1409 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.libs.gmscorelogger.service.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentDirectBootAwareApiService }
+11-19 06:36:22.395  1739  1739 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.chimera.container.moduleinstall.ModuleInstallService.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.GmsApiService }
+11-19 06:36:26.657  1739  4015 I AlarmManager: set [name: ApiService type: 2 triggerAtMillis: 120000 windowMillis: -1 intervalMillis: 0]
+11-19 06:36:27.092  1409  1409 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.nearby.sharing.START_SERVICE dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiServiceNoInstantApps }
+11-19 06:36:27.092  1409  1409 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.nearby.sharing.START_SERVICE dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiServiceNoInstantApps }
+11-19 06:36:43.123  1409  1409 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.icing.LIGHTWEIGHT_INDEX_SERVICE dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:36:43.623  1409  1409 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.tapandpay.service.BIND dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:36:45.430   524   613 W ActivityManager: Unable to start service Intent { act=com.google.android.gms.drive.ApiService.RESET_AFTER_BOOT flg=0x4 cmp=com.google.android.gms/.drive.api.ApiService (has extras) } U=0: not found
+11-19 06:36:46.495  1409  1409 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.phenotype.service.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:36:52.392  1409  1409 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.scheduler.ACTION_PROXY_SCHEDULE dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:36:55.356  1409  1409 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.clearcut.service.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentDirectBootAwareApiService }
+11-19 06:37:09.553  1739  1739 D BoundBrokerSvc: onRebind: Intent { act=com.google.android.gms.chimera.container.moduleinstall.ModuleInstallService.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.GmsApiService }
+11-19 06:37:09.941  1409  1409 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.presencemanager.service.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:37:09.941  1409  1409 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.presencemanager.service.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:37:09.950  1409  1409 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.presencemanager.service.INTERNAL_IDENTITY dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:37:09.950  1409  1409 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.presencemanager.service.INTERNAL_IDENTITY dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:37:12.060  4279  4279 D LoginScreen: Composing LoginScreen
+11-19 06:37:13.590  4279  4279 D LoginScreen: Composing LoginScreen
+11-19 06:37:14.453  4279  4279 D LoginScreen: Composing LoginScreen
+11-19 06:37:14.545  4279  4279 D LoginScreen: Composing LoginScreen
+11-19 06:37:15.152  4279  4279 D LoginScreen: Composing LoginScreen
+11-19 06:37:16.549  4279  4279 D LoginScreen: Composing LoginScreen
+11-19 06:37:16.678  4279  4279 D LoginScreen: Composing LoginScreen
+11-19 06:37:18.451  1409  1409 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.cast.firstparty.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:37:18.451  1409  1409 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.cast.firstparty.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:37:18.690  4279  4279 D LoginScreen: Composing LoginScreen
+11-19 06:37:19.073  4279  4279 D LoginScreen: Composing LoginScreen
+11-19 06:37:19.273  4279  4279 D LoginScreen: Composing LoginScreen
+11-19 06:37:19.426  4279  4279 D LoginScreen: Composing LoginScreen
+11-19 06:37:19.597  4279  4279 D LoginScreen: Composing LoginScreen
+11-19 06:37:19.852  4279  4279 D LoginScreen: Composing LoginScreen
+11-19 06:37:20.035  4279  4279 D LoginScreen: Composing LoginScreen
+11-19 06:37:20.166  4279  4279 D LoginScreen: Composing LoginScreen
+11-19 06:37:20.558  4279  4279 D LoginScreen: Composing LoginScreen
+11-19 06:37:20.791  4279  4279 D LoginScreen: Composing LoginScreen
+11-19 06:37:20.844  4279  4279 D LoginScreen: Composing LoginScreen
+11-19 06:37:21.652  4279  4279 D LoginScreen: Composing LoginScreen
+11-19 06:37:24.671  1739  1739 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.chimera.container.moduleinstall.ModuleInstallService.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.GmsApiService }
+11-19 06:37:24.971  1409  1409 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.presencemanager.service.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:37:24.972  1409  1409 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.presencemanager.service.INTERNAL_IDENTITY dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:37:33.758  1409  1409 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.cast.firstparty.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:39:06.047   524   589 I ActivityTaskManager: START u0 {flg=0x10000000 cmp=com.android.ai.catalog/.debug.TestRegistrationActivity} from uid 2000
+11-19 06:39:06.342   524   560 I ActivityManager: Start proc 4691:com.android.ai.catalog/u0a174 for next-top-activity {com.android.ai.catalog/com.android.ai.catalog.debug.TestRegistrationActivity}
+11-19 06:39:07.429  1409  1409 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.nearby.exposurenotification.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiServiceNoInstantApps }
+11-19 06:39:07.432  1409  1409 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.nearby.exposurenotification.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiServiceNoInstantApps }
+11-19 06:39:09.413  4691  4751 I okhttp.OkHttpClient: --> POST http://10.0.2.2:8080/api/emails/register (73-byte body)
+11-19 06:39:09.498   524  4352 D CoreBackPreview: Window{9f51981 u0 com.android.ai.catalog/com.android.ai.catalog.debug.TestRegistrationActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@5d2667, mPriority=-1}
+11-19 06:39:09.863  4691  4751 I okhttp.OkHttpClient: <-- 400 Bad Request http://10.0.2.2:8080/api/emails/register (449ms, unknown-length body)
+11-19 06:39:10.594   524   548 I ActivityTaskManager: Displayed com.android.ai.catalog/.debug.TestRegistrationActivity: +4s358ms
+11-19 06:39:12.883   524   589 D CoreBackPreview: Window{9f51981 u0 com.android.ai.catalog/com.android.ai.catalog.debug.TestRegistrationActivity}: Setting back callback null
+11-19 06:39:12.897   524   589 W InputManager-JNI: Input channel object '9f51981 com.android.ai.catalog/com.android.ai.catalog.debug.TestRegistrationActivity (client)' was disposed without first being removed with the input manager!
+11-19 06:39:22.494  1409  1409 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.nearby.exposurenotification.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiServiceNoInstantApps }
+11-19 06:41:05.608  1739  1739 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.credential.manager.service.firstparty.START dat=chimera-action:/... cmp=com.google.android.gms/.chimera.GmsApiService }
+11-19 06:41:21.882  1739  1739 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.pay.service.BIND dat=chimera-action:/... cmp=com.google.android.gms/.chimera.GmsApiService }
+11-19 06:42:42.961   524  4356 I ActivityTaskManager: START u0 {flg=0x10000000 cmp=com.android.ai.catalog/.debug.TestRegistrationActivity} from uid 2000
+11-19 06:42:43.438   524   560 I ActivityManager: Start proc 4898:com.android.ai.catalog/u0a174 for next-top-activity {com.android.ai.catalog/com.android.ai.catalog.debug.TestRegistrationActivity}
+11-19 06:42:44.415  1409  1409 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.icing.LIGHTWEIGHT_INDEX_SERVICE dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:42:44.416  1409  1409 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.icing.LIGHTWEIGHT_INDEX_SERVICE dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:42:47.240  4898  4941 I okhttp.OkHttpClient: --> POST http://10.0.2.2:8080/api/emails/register
+11-19 06:42:47.241  4898  4941 I okhttp.OkHttpClient: Content-Type: application/json; charset=UTF-8
+11-19 06:42:47.241  4898  4941 I okhttp.OkHttpClient: Content-Length: 73
+11-19 06:42:47.241  4898  4941 I okhttp.OkHttpClient: {"email":"test@example.com","password":"Password123","username":"tester"}
+11-19 06:42:47.241  4898  4941 I okhttp.OkHttpClient: --> END POST (73-byte body)
+11-19 06:42:47.403   524   703 D CoreBackPreview: Window{e77f1c u0 com.android.ai.catalog/com.android.ai.catalog.debug.TestRegistrationActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@52fc0a1, mPriority=-1}
+11-19 06:42:47.466  4898  4941 I okhttp.OkHttpClient: <-- 400 Bad Request http://10.0.2.2:8080/api/emails/register (224ms)
+11-19 06:42:47.467  4898  4941 I okhttp.OkHttpClient: transfer-encoding: chunked
+11-19 06:42:47.467  4898  4941 I okhttp.OkHttpClient: Vary: Origin
+11-19 06:42:47.467  4898  4941 I okhttp.OkHttpClient: Vary: Access-Control-Request-Method
+11-19 06:42:47.467  4898  4941 I okhttp.OkHttpClient: Vary: Access-Control-Request-Headers
+11-19 06:42:47.467  4898  4941 I okhttp.OkHttpClient: X-Content-Type-Options: nosniff
+11-19 06:42:47.467  4898  4941 I okhttp.OkHttpClient: X-XSS-Protection: 0
+11-19 06:42:47.467  4898  4941 I okhttp.OkHttpClient: Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+11-19 06:42:47.468  4898  4941 I okhttp.OkHttpClient: Pragma: no-cache
+11-19 06:42:47.468  4898  4941 I okhttp.OkHttpClient: Expires: 0
+11-19 06:42:47.468  4898  4941 I okhttp.OkHttpClient: X-Frame-Options: DENY
+11-19 06:42:47.468  4898  4941 I okhttp.OkHttpClient: Content-Type: application/json;charset=UTF-8
+11-19 06:42:47.468  4898  4941 I okhttp.OkHttpClient: Content-Language: en
+11-19 06:42:47.468  4898  4941 I okhttp.OkHttpClient: Date: Wed, 19 Nov 2025 06:42:48 GMT
+11-19 06:42:47.471  4898  4941 I okhttp.OkHttpClient: {"email":"test@example.com","registrationDate":null,"message":"Email test@example.com is already registered"}
+11-19 06:42:47.471  4898  4941 I okhttp.OkHttpClient: <-- END HTTP (109-byte body)
+11-19 06:42:48.156   524   548 I ActivityTaskManager: Displayed com.android.ai.catalog/.debug.TestRegistrationActivity: +5s196ms
+11-19 06:42:49.515   524  2896 D CoreBackPreview: Window{e77f1c u0 com.android.ai.catalog/com.android.ai.catalog.debug.TestRegistrationActivity}: Setting back callback null
+11-19 06:42:49.518   524  2896 W InputManager-JNI: Input channel object 'e77f1c com.android.ai.catalog/com.android.ai.catalog.debug.TestRegistrationActivity (client)' was disposed without first being removed with the input manager!
+11-19 06:43:00.396  1409  1409 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.icing.LIGHTWEIGHT_INDEX_SERVICE dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:49:27.058  1409  1409 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.icing.LIGHTWEIGHT_INDEX_SERVICE dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:49:27.058  1409  1409 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.icing.LIGHTWEIGHT_INDEX_SERVICE dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:49:28.920  5562  5562 D LoginScreen: Composing LoginScreen
+11-19 06:49:31.589  5562  5562 D LoginScreen: Composing LoginScreen
+11-19 06:49:42.362  1409  1409 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.icing.LIGHTWEIGHT_INDEX_SERVICE dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:49:49.089  5562  5562 D LoginScreen: Composing LoginScreen
+11-19 06:53:45.108  1409  1409 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.icing.LIGHTWEIGHT_INDEX_SERVICE dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:53:45.108  1409  1409 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.icing.LIGHTWEIGHT_INDEX_SERVICE dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:53:47.471  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:53:49.248  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:53:56.569  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:53:59.358  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:54:01.086  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:54:01.290  1409  1409 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.icing.LIGHTWEIGHT_INDEX_SERVICE dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 06:54:03.419  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:54:04.991  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:54:06.469  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:54:08.186  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:54:09.763  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:54:15.270  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:54:24.978  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:54:26.288  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:54:27.685  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:54:29.137  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:54:31.419  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:54:33.453  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:54:34.851  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:54:36.269  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:54:44.688  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:54:48.122  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:54:56.386  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:54:57.869  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:55:00.920  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:55:02.339  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:55:03.812  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:55:05.169  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:55:06.385  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:55:07.618  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:55:12.769  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:55:14.949  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:55:17.819  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:55:19.587  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:55:21.753  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:55:23.403  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:55:26.062  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 06:55:26.113  6421  6919 I okhttp.OkHttpClient: --> POST http://10.0.2.2:8080/api/emails/login
+11-19 06:55:26.113  6421  6919 I okhttp.OkHttpClient: Content-Type: application/json; charset=UTF-8
+11-19 06:55:26.113  6421  6919 I okhttp.OkHttpClient: Content-Length: 59
+11-19 06:55:26.113  6421  6919 I okhttp.OkHttpClient: {"email":"rlabston@test.com","password":"Rl12345678Abston"}
+11-19 06:55:26.113  6421  6919 I okhttp.OkHttpClient: --> END POST (59-byte body)
+11-19 06:55:26.336  6421  6919 I okhttp.OkHttpClient: <-- 200 OK http://10.0.2.2:8080/api/emails/login (222ms)
+11-19 06:55:26.336  6421  6919 I okhttp.OkHttpClient: transfer-encoding: chunked
+11-19 06:55:26.336  6421  6919 I okhttp.OkHttpClient: Vary: Origin
+11-19 06:55:26.336  6421  6919 I okhttp.OkHttpClient: Vary: Access-Control-Request-Method
+11-19 06:55:26.336  6421  6919 I okhttp.OkHttpClient: Vary: Access-Control-Request-Headers
+11-19 06:55:26.336  6421  6919 I okhttp.OkHttpClient: X-Content-Type-Options: nosniff
+11-19 06:55:26.336  6421  6919 I okhttp.OkHttpClient: X-XSS-Protection: 0
+11-19 06:55:26.336  6421  6919 I okhttp.OkHttpClient: Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+11-19 06:55:26.336  6421  6919 I okhttp.OkHttpClient: Pragma: no-cache
+11-19 06:55:26.337  6421  6919 I okhttp.OkHttpClient: Expires: 0
+11-19 06:55:26.337  6421  6919 I okhttp.OkHttpClient: X-Frame-Options: DENY
+11-19 06:55:26.337  6421  6919 I okhttp.OkHttpClient: Content-Type: application/json;charset=UTF-8
+11-19 06:55:26.337  6421  6919 I okhttp.OkHttpClient: Content-Language: en
+11-19 06:55:26.337  6421  6919 I okhttp.OkHttpClient: Date: Wed, 19 Nov 2025 06:55:26 GMT
+11-19 06:55:26.338  6421  6919 I okhttp.OkHttpClient: {"email":"rlabston@test.com","username":"Robert Abston","message":"Login successful","roles":["ADMIN","USER"],"token":"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJybGFic3RvbkB0ZXN0LmNvbSIsInVzZXJuYW1lIjoiUm9iZXJ0IEFic3RvbiIsInJvbGVzIjpbIkFETUlOIiwiVVNFUiJdLCJpYXQiOjE3NjM1MzUzMjYsImV4cCI6MTc2MzUzODkyNn0.IERFrzfRlAXApPSTW_wQSWObxWs5tLGUSSCEnSBZs3E","expiresInMs":3600000}
+11-19 06:55:26.338  6421  6919 I okhttp.OkHttpClient: <-- END HTTP (359-byte body)
+11-19 06:55:26.430  6421  6421 D LoginScreen: Composing LoginScreen
+11-19 07:00:58.172  1409  1409 D BoundBrokerSvc: onBind: Intent { act=com.google.android.gms.icing.LIGHTWEIGHT_INDEX_SERVICE dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 07:00:58.172  1409  1409 D BoundBrokerSvc: Loading bound service for intent: Intent { act=com.google.android.gms.icing.LIGHTWEIGHT_INDEX_SERVICE dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 07:01:10.729   524   545 I ActivityTaskManager: START u0 {flg=0x10000000 cmp=com.android.ai.catalog/.debug.TestRegistrationActivity} from uid 2000
+11-19 07:01:10.911   524   560 I ActivityManager: Start proc 7594:com.android.ai.catalog/u0a174 for next-top-activity {com.android.ai.catalog/com.android.ai.catalog.debug.TestRegistrationActivity}
+11-19 07:01:12.776  7594  7625 I okhttp.OkHttpClient: --> POST http://10.0.2.2:8080/api/emails/register
+11-19 07:01:12.776  7594  7625 I okhttp.OkHttpClient: Content-Type: application/json; charset=UTF-8
+11-19 07:01:12.776  7594  7625 I okhttp.OkHttpClient: Content-Length: 73
+11-19 07:01:12.776  7594  7625 I okhttp.OkHttpClient: {"email":"test@example.com","password":"Password123","username":"tester"}
+11-19 07:01:12.777  7594  7625 I okhttp.OkHttpClient: --> END POST (73-byte body)
+11-19 07:01:12.800   524   545 D CoreBackPreview: Window{8b1f82f u0 com.android.ai.catalog/com.android.ai.catalog.debug.TestRegistrationActivity}: Setting back callback OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@e0e251a, mPriority=-1}
+11-19 07:01:12.902  7594  7625 I okhttp.OkHttpClient: <-- 400 Bad Request http://10.0.2.2:8080/api/emails/register (124ms)
+11-19 07:01:12.902  7594  7625 I okhttp.OkHttpClient: transfer-encoding: chunked
+11-19 07:01:12.902  7594  7625 I okhttp.OkHttpClient: Vary: Origin
+11-19 07:01:12.902  7594  7625 I okhttp.OkHttpClient: Vary: Access-Control-Request-Method
+11-19 07:01:12.903  7594  7625 I okhttp.OkHttpClient: Vary: Access-Control-Request-Headers
+11-19 07:01:12.903  7594  7625 I okhttp.OkHttpClient: X-Content-Type-Options: nosniff
+11-19 07:01:12.903  7594  7625 I okhttp.OkHttpClient: X-XSS-Protection: 0
+11-19 07:01:12.903  7594  7625 I okhttp.OkHttpClient: Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+11-19 07:01:12.903  7594  7625 I okhttp.OkHttpClient: Pragma: no-cache
+11-19 07:01:12.903  7594  7625 I okhttp.OkHttpClient: Expires: 0
+11-19 07:01:12.903  7594  7625 I okhttp.OkHttpClient: X-Frame-Options: DENY
+11-19 07:01:12.903  7594  7625 I okhttp.OkHttpClient: Content-Type: application/json;charset=UTF-8
+11-19 07:01:12.904  7594  7625 I okhttp.OkHttpClient: Content-Language: en
+11-19 07:01:12.904  7594  7625 I okhttp.OkHttpClient: Date: Wed, 19 Nov 2025 07:01:13 GMT
+11-19 07:01:12.905  7594  7625 I okhttp.OkHttpClient: {"email":"test@example.com","registrationDate":null,"message":"Email test@example.com is already registered"}
+11-19 07:01:12.905  7594  7625 I okhttp.OkHttpClient: <-- END HTTP (109-byte body)
+11-19 07:01:13.216  1409  1409 D BoundBrokerSvc: onUnbind: Intent { act=com.google.android.gms.icing.LIGHTWEIGHT_INDEX_SERVICE dat=chimera-action:/... cmp=com.google.android.gms/.chimera.PersistentApiService }
+11-19 07:01:13.381   524   548 I ActivityTaskManager: Displayed com.android.ai.catalog/.debug.TestRegistrationActivity: +2s647ms
+11-19 07:01:14.532   524  1029 D CoreBackPreview: Window{8b1f82f u0 com.android.ai.catalog/com.android.ai.catalog.debug.TestRegistrationActivity}: Setting back callback null
+11-19 07:01:14.536   524  1029 W InputManager-JNI: Input channel object '8b1f82f com.android.ai.catalog/com.android.ai.catalog.debug.TestRegistrationActivity (client)' was disposed without first being removed with the input manager!

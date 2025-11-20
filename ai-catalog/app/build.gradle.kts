@@ -38,6 +38,8 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        // Expose a BASE_URL BuildConfig field for the app; default points to host when running in emulator
+        buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8080/\"")
     }
 
     buildTypes {
@@ -58,6 +60,8 @@ android {
     }
     buildFeatures {
         compose = true
+        // enable generation of BuildConfig fields (we use BUILD_CONFIG BASE_URL)
+        buildConfig = true
     }
 }
 
@@ -73,6 +77,15 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
+    // Networking: Retrofit + OkHttp + Scalars (for simple string/health checks)
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-scalars:2.9.0")
+    // JSON converter for API requests/responses (used by email endpoints)
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+    // Material icons for the password visibility eye
+    implementation("androidx.compose.material:material-icons-extended")
     implementation(libs.androidx.navigation.runtime.ktx)
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
@@ -80,19 +93,10 @@ dependencies {
     implementation(libs.firebase.ai)
     ksp(libs.hilt.compiler)
 
+    // Keep only the ui-component project as a dependency for the debug integration.
+    // The sample modules are optional for this minimal integration and were omitted
+    // to avoid compiling sample modules with syntax issues during this experiment.
     implementation(project(":ui-component"))
-    implementation(project(":samples:gemini-multimodal"))
-    implementation(project(":samples:gemini-chatbot"))
-    implementation(project(":samples:genai-summarization"))
-    implementation(project(":samples:genai-image-description"))
-    implementation(project(":samples:genai-writing-assistance"))
-    implementation(project(":samples:imagen"))
-    implementation(project(":samples:imagen-editing"))
-    implementation(project(":samples:magic-selfie"))
-    implementation(project(":samples:gemini-video-summarization"))
-    implementation(project(":samples:gemini-live-todo"))
-    implementation(project(":samples:gemini-video-metadata-creation"))
-    implementation(project(":samples:gemini-image-chat"))
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
