@@ -91,3 +91,11 @@ pip-delete-this-directory.txt
 *.jpeg
 *.gif
 live-screenshots/
+
+# Screenshots
+*.png
+*.jpg
+*.jpeg
+*.gif
+live-screenshots/
+ai-catalog/live-screenshots/
