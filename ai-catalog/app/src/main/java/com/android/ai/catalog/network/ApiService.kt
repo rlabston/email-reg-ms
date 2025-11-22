@@ -1,5 +1,6 @@
 package com.android.ai.catalog.network
 
+import android.os.Build
 import com.android.ai.catalog.BuildConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -33,16 +34,45 @@ interface Api {
     @kotlin.jvm.Throws(Exception::class)
     @retrofit2.http.DELETE("api/emails/id/{id}")
     suspend fun deleteRegisteredById(@retrofit2.http.Path("id") id: Long): Response<Void>
+
+    // Home screen endpoints (served at /home/* via gateway => /api/home/* here)
+    @GET("api/home/data")
+    suspend fun getHomeData(): Response<HomeScreenData>
+    @GET("api/home/featured")
+    suspend fun getFeatured(): Response<List<ServiceItem>>
 }
 
 object ApiService {
-    // Mutable auth token used by the auth interceptor. Set after successful login.
-    @Volatile
-    var authToken: String? = null
+    /**
+     * Detect if running on emulator by checking Build properties.
+     * Common emulator indicators: FINGERPRINT contains "generic", BRAND is "generic",
+     * MODEL contains "sdk" or "Emulator", or MANUFACTURER is "Google" with MODEL containing "sdk"
+     */
+    private fun isEmulator(): Boolean {
+        return (Build.FINGERPRINT.startsWith("generic")
+                || Build.FINGERPRINT.startsWith("unknown")
+                || Build.MODEL.contains("google_sdk")
+                || Build.MODEL.contains("Emulator")
+                || Build.MODEL.contains("Android SDK built for x86")
+                || Build.MANUFACTURER.contains("Genymotion")
+                || (Build.BRAND.startsWith("generic") && Build.DEVICE.startsWith("generic"))
+                || "google_sdk" == Build.PRODUCT)
+    }
+
+    /**
+     * Get the appropriate base URL based on whether we're running on emulator or device
+     */
+    private fun getBaseUrl(): String {
+        return if (isEmulator()) {
+            BuildConfig.EMULATOR_SERVER_URL
+        } else {
+            BuildConfig.DEVICE_SERVER_URL
+        }
+    }
 
     private val authInterceptor = Interceptor { chain ->
         val reqBuilder = chain.request().newBuilder()
-        authToken?.let { token ->
+        com.android.ai.catalog.auth.AuthManager.getToken()?.let { token ->
             reqBuilder.addHeader("Authorization", "Bearer $token")
         }
         chain.proceed(reqBuilder.build())
@@ -62,7 +92,7 @@ object ApiService {
         .build()
 
     private val retrofit = Retrofit.Builder()
-        .baseUrl(BuildConfig.BASE_URL)
+        .baseUrl(getBaseUrl())
         .client(client)
         // Scalars first (for simple health checks) then Gson for JSON bodies
         .addConverterFactory(ScalarsConverterFactory.create())
@@ -87,8 +117,7 @@ object ApiService {
             val resp = api.login(EmailLoginRequest(email = email, password = password))
             val body = resp.body()
             if (resp.isSuccessful) {
-                // store token for subsequent requests
-                authToken = body?.token
+                // Token is now stored in AuthManager by LoginScreen
                 Pair(true, body)
             } else {
                 Pair(false, body)
@@ -130,6 +159,34 @@ object ApiService {
                 Triple(true, resp.body(), null)
             } else {
                 // Try to surface an error body if present to the UI for debugging
+                val err = try { resp.errorBody()?.string() } catch (e: Exception) { null }
+                Triple(false, resp.body(), err ?: "HTTP ${resp.code()}")
+            }
+        } catch (e: Exception) {
+            Triple(false, null, "${e::class.simpleName}: ${e.message}")
+        }
+    }
+
+    suspend fun homeData(): Triple<Boolean, HomeScreenData?, String?> = withContext(Dispatchers.IO) {
+        try {
+            val resp = api.getHomeData()
+            if (resp.isSuccessful) {
+                Triple(true, resp.body(), null)
+            } else {
+                val err = try { resp.errorBody()?.string() } catch (e: Exception) { null }
+                Triple(false, resp.body(), err ?: "HTTP ${resp.code()}")
+            }
+        } catch (e: Exception) {
+            Triple(false, null, "${e::class.simpleName}: ${e.message}")
+        }
+    }
+
+    suspend fun homeFeatured(): Triple<Boolean, List<ServiceItem>?, String?> = withContext(Dispatchers.IO) {
+        try {
+            val resp = api.getFeatured()
+            if (resp.isSuccessful) {
+                Triple(true, resp.body(), null)
+            } else {
                 val err = try { resp.errorBody()?.string() } catch (e: Exception) { null }
                 Triple(false, resp.body(), err ?: "HTTP ${resp.code()}")
             }

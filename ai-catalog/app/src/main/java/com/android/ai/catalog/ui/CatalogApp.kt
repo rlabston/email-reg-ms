@@ -56,13 +56,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.android.ai.catalog.R
 import com.android.ai.catalog.domain.sampleCatalog
 import com.android.ai.catalog.ui.login.LoginScreen
 import com.android.ai.catalog.ui.emails.EmailListScreen
+import com.android.ai.catalog.ui.home.HomeScreen
 import com.google.firebase.FirebaseApp
 import kotlinx.serialization.Serializable
 
@@ -71,24 +74,15 @@ import kotlinx.serialization.Serializable
 fun CatalogApp(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     
-    // Check if user is already logged in by reading persisted auth
-    val prefs = context.getSharedPreferences("auth_prefs", android.content.Context.MODE_PRIVATE)
-    val savedToken = prefs.getString("token", null)
-    val startDestination = if (savedToken.isNullOrBlank()) "login" else "home"
+    // Check if user is already logged in using in-memory auth (clears on rebuild)
+    val startDestination = if (com.android.ai.catalog.auth.AuthManager.isLoggedIn()) "home" else "login"
     
     val navController = rememberNavController()
     var isDialogOpened by remember { mutableStateOf(false) }
 
-    // Diagnostic: draw a bright magenta layer to test whether the global background layer is visible at all.
+    // Draw cityscape background image
     Box(modifier = Modifier.fillMaxSize()) {
-        // Magenta diagnostic layer (temporary)
-        androidx.compose.foundation.layout.Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = androidx.compose.ui.graphics.Color(0xFFFF00FF.toInt())),
-        )
-
-        // Then draw the intended background image over the magenta layer
+        // Cityscape background image
         Image(
             painter = painterResource(id = R.drawable.bg),
             contentDescription = "App background",
@@ -103,23 +97,64 @@ fun CatalogApp(modifier: Modifier = Modifier) {
         ) {
             composable("login") {
                 // When login succeeds navigate to the HomeScreen destination
-                LoginScreen(onLoggedIn = { 
+                LoginScreen(
+                    onLoggedIn = { 
                     Log.d("CatalogApp", "Login successful, navigating to home")
                     navController.navigate("home") {
                         // Clear login screen from back stack
                         popUpTo("login") { inclusive = true }
                         launchSingleTop = true
                     }
-                })
+                },
+                    onNavigateToRegisterPage = {
+                        navController.navigate("emails?mode=register") {
+                            launchSingleTop = true
+                        }
+                    }
+                )
             }
 
             composable("home") {
                 Log.d("CatalogApp", "HomeScreen composing - drawable ids: bg=${R.drawable.bg}")
+                HomeScreen(
+                    onLogout = {
+                        Log.d("CatalogApp", "User logged out, navigating to login")
+                        navController.navigate("login") {
+                            // Clear home screen from back stack
+                            popUpTo("home") { inclusive = true }
+                            launchSingleTop = true
+                        }
+                    },
+                    onNavigateToEmails = { mode ->
+                        Log.d("CatalogApp", "Navigating to email management with mode=$mode")
+                        navController.navigate("emails?mode=$mode") {
+                            launchSingleTop = true
+                        }
+                    },
+                    onLogin = {
+                        Log.d("CatalogApp", "Guest navigating to login from home")
+                        navController.navigate("login") {
+                            launchSingleTop = true
+                        }
+                    }
+                )
+            }
+            // Email management screen with optional mode parameter
+            composable(
+                route = "emails?mode={mode}",
+                arguments = listOf(
+                    navArgument("mode") {
+                        type = NavType.StringType
+                        nullable = true
+                        defaultValue = null
+                    }
+                )
+            ) { backStackEntry ->
+                val mode = backStackEntry.arguments?.getString("mode") ?: "menu"
                 val topAppBarState = rememberTopAppBarState()
                 val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(topAppBarState)
                 Scaffold(
                     modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-                    // Make scaffold containers transparent so the global background shows through
                     containerColor = Color.Transparent,
                     topBar = {
                         TwoRowsTopAppBar(
@@ -132,7 +167,7 @@ fun CatalogApp(modifier: Modifier = Modifier) {
                             title = { expanded ->
                                 if (expanded) {
                                     Text(
-                                        text = stringResource(id = R.string.top_bar_title_expanded),
+                                        text = "Email Management",
                                         style = MaterialTheme.typography.displaySmall,
                                         color = MaterialTheme.colorScheme.onSurface,
                                         maxLines = 2,
@@ -142,7 +177,7 @@ fun CatalogApp(modifier: Modifier = Modifier) {
                                     Row {
                                         Spacer(modifier = Modifier.width(12.dp))
                                         Text(
-                                            text = stringResource(id = R.string.top_bar_title),
+                                            text = "Emails",
                                             style = MaterialTheme.typography.titleLarge,
                                             color = MaterialTheme.colorScheme.onSurface,
                                             maxLines = 1,
@@ -160,9 +195,28 @@ fun CatalogApp(modifier: Modifier = Modifier) {
                         modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        // Email registration + list screen at top of Home
                         item {
-                            EmailListScreen()
+                            EmailListScreen(
+                                onNavigateBack = {
+                                    navController.navigate("home") {
+                                        launchSingleTop = true
+                                    }
+                                },
+                                onLogout = {
+                                    Log.d("CatalogApp", "User logged out from emails, navigating to login")
+                                    navController.navigate("login") {
+                                        popUpTo("home") { inclusive = true }
+                                        launchSingleTop = true
+                                    }
+                                },
+                                onLogin = {
+                                    Log.d("CatalogApp", "Guest navigating to login")
+                                    navController.navigate("login") {
+                                        launchSingleTop = true
+                                    }
+                                },
+                                initialMode = mode
+                            )
                             Spacer(modifier = Modifier.height(16.dp))
                         }
                         items(sampleCatalog) {

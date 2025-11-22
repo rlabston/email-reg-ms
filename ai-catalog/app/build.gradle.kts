@@ -38,8 +38,9 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-        // Expose a BASE_URL BuildConfig field for the app; default points to host when running in emulator
-        buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8080/\"")
+        // Server IP addresses for emulator and physical device
+        buildConfigField("String", "EMULATOR_SERVER_URL", "\"http://10.0.2.2:8080/\"")
+        buildConfigField("String", "DEVICE_SERVER_URL", "\"http://135.148.149.138:8080/\"")
     }
 
     buildTypes {

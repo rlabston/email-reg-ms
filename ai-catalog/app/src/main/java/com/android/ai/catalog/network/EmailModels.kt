@@ -43,3 +43,37 @@ data class EmailLoginResponse(
     val roles: List<String>? = null,
     val expiresInMs: Long? = null,
 )
+
+@Serializable
+data class ServiceItem(
+    val title: String,
+    val description: String,
+    val icon: String,
+    val category: String,
+    val features: List<String>,
+    val ctaText: String,
+    val ctaUrl: String,
+    val isHighlighted: Boolean
+)
+
+@Serializable
+data class ContactInfo(
+    val email: String,
+    val phone: String,
+    val website: String,
+    val address: String,
+    val linkedIn: String,
+    val github: String
+)
+
+@Serializable
+data class HomeScreenData(
+    val welcomeTitle: String,
+    val welcomeSubtitle: String,
+    val heroImageUrl: String,
+    val featuredServices: List<ServiceItem>,
+    val servicesByCategory: Map<String, List<ServiceItem>>,
+    val supportedTechnologies: List<String>,
+    val contactInfo: ContactInfo,
+    val lastUpdated: Long
+)

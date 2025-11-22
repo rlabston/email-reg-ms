@@ -59,6 +59,17 @@ This README captures the working session summary for the Android client, Spring 
 - GET `/api/emails/{email}` — Returns safe DTO for a specific email.
 - POST `/api/emails/login` — Verifies email + password; returns 200 with user on success, 401 on failure.
 
+### Home Screen Endpoints (Reactive Catalog)
+
+- GET `/api/home/data` — Returns aggregated home screen data including welcome title/subtitle and a featured services subset.
+- GET `/api/home/featured` — Returns only the featured services list.
+- GET `/api/home/services` — Returns categorized services (all available service items).
+- GET `/api/home/health` — Lightweight health check for home feature availability.
+
+Notes:
+- Base path `/home` is exposed through the gateway under `/api/home/*`.
+- Android/Angular/Compose clients use `/api/home/data` as the primary fetch and fall back to a local static placeholder if unavailable.
+
 ## Code Artifacts Touched (high level)
 
 Backend:

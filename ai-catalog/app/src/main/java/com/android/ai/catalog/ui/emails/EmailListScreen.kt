@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,6 +16,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,8 +31,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.ui.graphics.Color
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.android.ai.catalog.network.ApiService
@@ -39,7 +44,12 @@ import com.google.gson.Gson
 import kotlinx.coroutines.launch
 
 @Composable
-fun EmailListScreen() {
+fun EmailListScreen(
+    onNavigateBack: () -> Unit = {},
+    onLogout: () -> Unit = {},
+    onLogin: () -> Unit = {},
+    initialMode: String? = null // "menu" | "register" | "list"
+) {
     val context = androidx.compose.ui.platform.LocalContext.current as Context
     val scope = rememberCoroutineScope()
     var loading by remember { mutableStateOf(false) }
@@ -70,11 +80,12 @@ fun EmailListScreen() {
         fetch()
     }
 
-    // Determine if current user is admin by reading persisted roles
-    val prefs = context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
-    val rolesJson = prefs.getString("roles", null)
-    val currentRoles: List<String>? = rolesJson?.let { Gson().fromJson(it, Array<String>::class.java).toList() }
-    val isAdmin = currentRoles?.any { r -> r.equals("ADMIN", ignoreCase = true) || r.equals("ROLE_ADMIN", ignoreCase = true) } == true
+    // Determine if current user is logged in and their role
+    val isLoggedIn = com.android.ai.catalog.auth.AuthManager.isLoggedIn()
+    val isAdmin = com.android.ai.catalog.auth.AuthManager.isAdmin()
+    
+    // Track which view to show: "menu", "register", or "list"; allow override by initialMode
+    var currentView by remember { mutableStateOf(initialMode ?: if (isLoggedIn) "menu" else "register") }
 
     Column(
         modifier = Modifier
@@ -82,11 +93,109 @@ fun EmailListScreen() {
             .padding(16.dp),
         verticalArrangement = Arrangement.Top
     ) {
-        Text(text = "Registered emails", style = MaterialTheme.typography.headlineSmall)
-        Button(onClick = { fetch() }, modifier = Modifier.padding(top = 8.dp)) {
-            Text(text = "Refresh")
+        // Header with back and login/logout buttons
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(onClick = onNavigateBack) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "Back to Home",
+                    tint = Color.White
+                )
+            }
+            
+            // Show Login or Logout based on authentication state
+            if (isLoggedIn) {
+                TextButton(onClick = {
+                    com.android.ai.catalog.auth.AuthManager.clearAuth()
+                    onLogout()
+                }) {
+                    Text(
+                        text = "Logout",
+                        color = Color.White
+                    )
+                }
+            } else {
+                TextButton(onClick = onLogin) {
+                    Text(
+                        text = "Login",
+                        color = Color.White
+                    )
+                }
+            }
         }
-
+        
+        // Show menu or content based on state
+        when (currentView) {
+            "menu" -> {
+                // Menu view for logged-in users
+                Text(
+                    text = "Email Management",
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = Color.White,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+                
+                Card(
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
+                    colors = CardDefaults.cardColors()
+                ) {
+                    Button(
+                        onClick = onNavigateBack,
+                        modifier = Modifier.fillMaxWidth().padding(16.dp)
+                    ) {
+                        Text("Home (Technet7 Services)")
+                    }
+                }
+                
+                Card(
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
+                    colors = CardDefaults.cardColors()
+                ) {
+                    Button(
+                        onClick = { currentView = "register" },
+                        modifier = Modifier.fillMaxWidth().padding(16.dp)
+                    ) {
+                        Text("Register New Users")
+                    }
+                }
+                
+                Card(
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
+                    colors = CardDefaults.cardColors()
+                ) {
+                    Button(
+                        onClick = { 
+                            currentView = "list"
+                            fetch()
+                        },
+                        modifier = Modifier.fillMaxWidth().padding(16.dp)
+                    ) {
+                        Text("View Registered Users")
+                    }
+                }
+            }
+            
+            "register" -> {
+                // Registration form view
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = "Register New User", style = MaterialTheme.typography.headlineSmall, color = Color.White)
+                    if (isLoggedIn) {
+                        TextButton(onClick = { currentView = "menu" }) {
+                            Text("Back to Menu", color = Color.White)
+                        }
+                    }
+                }
+        
         // Simple registration form embedded on this page for convenience
         Box(modifier = Modifier
             .padding(top = 12.dp)
@@ -163,6 +272,26 @@ fun EmailListScreen() {
                 Text(text = rr, modifier = Modifier.padding(12.dp))
             }
         }
+            }
+            
+            "list" -> {
+                // User list view
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = "Registered Users", style = MaterialTheme.typography.headlineSmall, color = Color.White)
+                    if (isLoggedIn) {
+                        TextButton(onClick = { currentView = "menu" }) {
+                            Text("Back to Menu", color = Color.White)
+                        }
+                    }
+                }
+                
+                Button(onClick = { fetch() }, modifier = Modifier.padding(top = 8.dp)) {
+                    Text(text = "Refresh")
+                }
 
         if (loading) {
             CircularProgressIndicator(modifier = Modifier.padding(top = 12.dp))
@@ -207,6 +336,8 @@ fun EmailListScreen() {
                         }
                     }
                 }
+            }
+        }
             }
         }
     }

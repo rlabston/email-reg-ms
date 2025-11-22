@@ -84,3 +84,10 @@ venv/
 .venv/
 pip-log.txt
 pip-delete-this-directory.txt
+
+# Screenshots
+*.png
+*.jpg
+*.jpeg
+*.gif
+live-screenshots/
