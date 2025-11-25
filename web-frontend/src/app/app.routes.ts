@@ -1,7 +1,10 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
-import { App } from './app';
+import { HomeComponent } from './home/home.component';
+import { RegistrationComponent } from './registration/registration.component';
+import { EmailListComponent } from './email-list/email-list.component';
 import { authGuard, authMatchGuard } from './guards/auth.guard';
+import { ChatbotComponent } from './chatbot/chatbot.component';
 
 export const routes: Routes = [
   {
@@ -11,10 +14,22 @@ export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    component: App,
-    // Use canMatch to ensure redirect happens even during initial navigation/hydration
+    component: HomeComponent
+  },
+  {
+    path: 'register',
+    component: RegistrationComponent
+  },
+  {
+    path: 'emails',
+    component: EmailListComponent,
     canMatch: [authMatchGuard],
-    // Keep canActivate as a secondary check for subsequent navigations
+    canActivate: [authGuard]
+  },
+  {
+    path: 'chatbot',
+    component: ChatbotComponent,
+    canMatch: [authMatchGuard],
     canActivate: [authGuard]
   }
 ];

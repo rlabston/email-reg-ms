@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Technet7 AI</string>
+    <string name="welcome">Welcome</string>
+    <string name="menu">Menu</string>
+    <string name="logout">Logout</string>
+    <string name="email_registration">Email Registration</string>
+    <string name="email">Email</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="register">Register</string>
+    <string name="registered_emails">Registered Emails</string>
+    <string name="load">Load</string>
+    <string name="delete_selected">Delete Selected</string>
+    <string name="ai_chatbot">AI Chatbot</string>
+    <string name="register_new_users">Register New Users</string>
+    <string name="view_registered_users">View Registered Users</string>
+    <string name="home">Home</string>
+</resources>

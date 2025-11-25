@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark theme colors matching ai-catalog -->
+    <color name="colorPrimary">#667eea</color>
+    <color name="colorPrimaryDark">#5568d3</color>
+    <color name="colorAccent">#764ba2</color>
+    
+    <color name="background_dark">#1a1a2e</color>
+    <color name="background_dark_secondary">#16213e</color>
+    <color name="background_dark_tertiary">#0f3460</color>
+    
+    <color name="card_background">#CC000000</color> <!-- 80% opacity black -->
+    <color name="card_border">#1AFFFFFF</color> <!-- 10% opacity white -->
+    
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#E0E0E0</color>
+    <color name="text_tertiary">#999999</color>
+    
+    <color name="input_background">#1AFFFFFF</color> <!-- 10% opacity white -->
+    <color name="input_border">#33FFFFFF</color> <!-- 20% opacity white -->
+    <color name="input_border_focused">#667eea</color>
+    
+    <color name="button_primary_start">#667eea</color>
+    <color name="button_primary_end">#764ba2</color>
+    
+    <color name="error_background">#f8d7da</color>
+    <color name="error_text">#721c24</color>
+    <color name="success_background">#d4edda</color>
+    <color name="success_text">#155724</color>
+</resources>

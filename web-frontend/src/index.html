@@ -7,24 +7,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <script>
-    // Pre-bootstrap redirect to login for unauthenticated users.
-    // This avoids SSR/hydration timing issues where router guards may not run immediately.
-    (function() {
-      try {
-        if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-          var email = localStorage.getItem('auth_email');
-          var path = window.location && window.location.pathname;
-          // Only redirect if NOT authenticated AND NOT already on login page
-          if (!email && (path === '/' || path === '' || path === '/index.html')) {
-            window.location.replace('/login');
-          }
-        }
-      } catch (e) {
-        // no-op
-      }
-    })();
-  </script>
-  <script>
     // Wire up the static fallback's interactivity: password toggle and login POST
     (function(){
       try {

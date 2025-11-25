@@ -64,7 +64,9 @@ import androidx.navigation.navArgument
 import com.android.ai.catalog.R
 import com.android.ai.catalog.domain.sampleCatalog
 import com.android.ai.catalog.ui.login.LoginScreen
+import com.android.ai.catalog.auth.AuthManager
 import com.android.ai.catalog.ui.emails.EmailListScreen
+import com.android.ai.catalog.ui.chatbot.ChatbotScreen
 import com.android.ai.catalog.ui.home.HomeScreen
 import com.google.firebase.FirebaseApp
 import kotlinx.serialization.Serializable
@@ -74,8 +76,9 @@ import kotlinx.serialization.Serializable
 fun CatalogApp(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     
-    // Check if user is already logged in using in-memory auth (clears on rebuild)
-    val startDestination = if (com.android.ai.catalog.auth.AuthManager.isLoggedIn()) "home" else "login"
+    // Home page is accessible to everyone (guests and authenticated users)
+    // per .copilot-policies.md requirement for consistent behavior across platforms
+    val startDestination = "home"
     
     val navController = rememberNavController()
     var isDialogOpened by remember { mutableStateOf(false) }
@@ -128,6 +131,11 @@ fun CatalogApp(modifier: Modifier = Modifier) {
                     onNavigateToEmails = { mode ->
                         Log.d("CatalogApp", "Navigating to email management with mode=$mode")
                         navController.navigate("emails?mode=$mode") {
+                            launchSingleTop = true
+                        }
+                    },
+                    onNavigateToChatbot = {
+                        navController.navigate("chatbot") {
                             launchSingleTop = true
                         }
                     },
@@ -237,6 +245,14 @@ fun CatalogApp(modifier: Modifier = Modifier) {
                 }
             }
             sampleCatalog.forEach {
+
+            composable("chatbot") {
+                ChatbotScreen(
+                    onNavigateBack = {
+                        navController.popBackStack()
+                    }
+                )
+            }
                 val catalogItem = it
                 composable(catalogItem.route) {
                     catalogItem.sampleEntryScreen()

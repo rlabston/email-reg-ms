@@ -1,136 +1,44 @@
-<ng-container *ngIf="authInitialized()">
-  <ng-container *ngIf="authed(); else unauthTpl">
-<div class="app-container">
+<div class="app-shell">
   <div class="header-bar">
-    <h3>{{ welcomeMessage() }}</h3>
-    <button type="button" class="logout-button" (click)="logout($event)">Logout</button>
-  </div>
-
-  <div class="registration-card">
-    <h1 class="title">{{ title() }}</h1>
-    
-    <form class="registration-form" (ngSubmit)="onRegister()">
-      <div class="input-group">
-        <label for="email">Email</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          [(ngModel)]="email"
-          placeholder="Enter your email"
-          [disabled]="isSubmitting()"
-          required
-        />
-      </div>
-
-      <div class="input-group">
-        <label for="username">Username</label>
-        <input
-          type="text"
-          id="username"
-          name="username"
-          [(ngModel)]="username"
-          placeholder="Enter your username"
-          [disabled]="isSubmitting()"
-          required
-        />
-      </div>
-
-      <div class="input-group">
-        <label for="password">Password</label>
-        <div class="password-input-wrapper">
-          <input
-            [type]="showPassword() ? 'text' : 'password'"
-            id="password"
-            name="password"
-            [(ngModel)]="password"
-            placeholder="Enter your password"
-            [disabled]="isSubmitting()"
-            required
-          />
-          <button
-            type="button"
-            class="toggle-password"
-            (click)="showPassword.set(!showPassword())"
-            [disabled]="isSubmitting()"
-            [attr.aria-label]="showPassword() ? 'Hide password' : 'Show password'"
-          >
-            {{ showPassword() ? '👁️' : '👁️‍🗨️' }}
-          </button>
-        </div>
-      </div>
-
-      <button 
-        type="submit" 
-        class="register-button"
-        [disabled]="isSubmitting()"
-      >
-        <span *ngIf="!isSubmitting()">Register</span>
-        <span *ngIf="isSubmitting()">Registering...</span>
+    <div class="header-left">
+      <button type="button" class="hamburger-menu" (click)="toggleMenu()" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
       </button>
-
-      <div 
-        *ngIf="statusMessage()" 
-        class="status-message"
-        [ngClass]="{ 'error': isError(), 'success': !isError() }"
-      >
-        {{ statusMessage() }}
-      </div>
-    </form>
+      <h3>{{ welcomeMessage() }}</h3>
+    </div>
+    <button *ngIf="authed()" type="button" class="logout-button" (click)="logout($event)">Logout</button>
   </div>
-  
-  <div class="list-card" *ngIf="isAdmin(); else notAdminTpl">
-    <div class="list-header">
-      <h2>Registered Emails</h2>
-      <button type="button" (click)="loadEmails()" [disabled]="listLoading()">
-        <span *ngIf="!listLoading()">Load</span>
-        <span *ngIf="listLoading()">Loading...</span>
+
+  <!-- Hamburger Menu Dropdown -->
+  <div class="menu-dropdown" [class.active]="menuOpen()">
+    <div class="menu-items">
+      <button type="button" class="menu-item" (click)="navigateTo('/')">
+        <span class="menu-icon">🏠</span>
+        <span class="menu-text">Home</span>
+      </button>
+      <button type="button" class="menu-item" (click)="navigateTo('/register')">
+        <span class="menu-icon">📧</span>
+        <span class="menu-text">Email Registration</span>
+      </button>
+      <button type="button" class="menu-item" *ngIf="!authed()" (click)="navigateTo('/login')">
+        <span class="menu-icon">🔐</span>
+        <span class="menu-text">Login</span>
+      </button>
+      <button type="button" class="menu-item" *ngIf="authed()" (click)="navigateTo('/chatbot')">
+        <span class="menu-icon">💬</span>
+        <span class="menu-text">AI Chatbot</span>
+      </button>
+      <button type="button" class="menu-item" *ngIf="isAdmin()" (click)="navigateTo('/emails')">
+        <span class="menu-icon">📋</span>
+        <span class="menu-text">View All Emails</span>
       </button>
     </div>
-
-    <div *ngIf="emails().length === 0 && !listLoading()" class="empty-state">
-      No emails loaded yet.
-    </div>
-
-    <table *ngIf="emails().length > 0" class="emails-table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Email</th>
-          <th>Username</th>
-          <th>Registered</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let e of emails()" (click)="selectEmail(e)" [class.selected]="selectedEmail() === e.email">
-          <td>{{ e.id }}</td>
-          <td>{{ e.email }}</td>
-          <td>{{ e.username }}</td>
-          <td>{{ e.registrationDate }}</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div class="list-actions" style="margin-top:12px;">
-      <button type="button" (click)="deleteSelected()" [disabled]="!selectedEmail()">Delete Selected</button>
-    </div>
   </div>
 
-  <ng-template #notAdminTpl>
-    <div class="list-card">
-      <div style="padding:20px;color:#666;">Registered emails list is visible to administrators only.</div>
-    </div>
-  </ng-template>
-
+  <div class="content-area">
+    <router-outlet />
+  </div>
 </div>
-
-  </ng-container>
-  <ng-template #unauthTpl>
-    <div class="app-container">
-        <div class="registration-card" style="text-align:center;padding:40px;color:#333;" role="status" aria-live="polite">
-          <h2 *ngIf="showRedirectingMessage()">Redirecting to login...</h2>
-        </div>
-    </div>
-  </ng-template>
-</ng-container>
 

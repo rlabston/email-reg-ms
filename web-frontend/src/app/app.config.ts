@@ -1,9 +1,10 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection, ErrorHandler } from '@angular/core';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideHttpClient, withFetch, withInterceptorsFromDi, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { TokenRefreshInterceptor } from './interceptors/token-refresh.interceptor';
+import { GlobalErrorHandler } from './error/global-error.handler';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,6 +14,7 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withFetch(), withInterceptorsFromDi()),
     provideRouter(routes),
     // Register interceptor to persist refreshed tokens sent by the backend
-    { provide: HTTP_INTERCEPTORS, useClass: TokenRefreshInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: TokenRefreshInterceptor, multi: true },
+    { provide: ErrorHandler, useClass: GlobalErrorHandler }
   ]
 };

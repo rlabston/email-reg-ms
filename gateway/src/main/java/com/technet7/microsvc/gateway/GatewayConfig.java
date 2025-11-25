@@ -7,8 +7,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Configure simple routes for Spring Cloud Gateway. By default all paths are forwarded
- * to the upstream backend configured by `gateway.backend.base-url`.
+ * Configure routes for Spring Cloud Gateway.
+ * - /api/** routes to backend microservice
+ * - Static files (Angular app) served from classpath:/static/
  */
 @Configuration
 public class GatewayConfig {
@@ -18,9 +19,12 @@ public class GatewayConfig {
 
     @Bean
     public RouteLocator routes(RouteLocatorBuilder builder) {
-        // Forward everything to backendBase preserving path and query
         return builder.routes()
-                .route("all_to_backend", r -> r.path("/**")
+                // Route API calls to backend microservice
+                .route("api_to_backend", r -> r.path("/api/**")
+                        .uri(backendBase))
+                // Route chatbot page to backend
+                .route("chatbot_to_backend", r -> r.path("/chatbot.html")
                         .uri(backendBase))
                 .build();
     }

@@ -40,6 +40,13 @@ interface Api {
     suspend fun getHomeData(): Response<HomeScreenData>
     @GET("api/home/featured")
     suspend fun getFeatured(): Response<List<ServiceItem>>
+    
+    // Chatbot endpoints
+    @POST("api/chat/message")
+    suspend fun sendChatMessage(@Body req: ChatRequest): Response<ChatResponse>
+    
+    @GET("api/chat/history/{conversationId}")
+    suspend fun getChatHistory(@retrofit2.http.Path("conversationId") conversationId: String): Response<ConversationHistoryResponse>
 }
 
 object ApiService {
@@ -194,4 +201,34 @@ object ApiService {
             Triple(false, null, "${e::class.simpleName}: ${e.message}")
         }
     }
+
+    suspend fun sendChatMessage(conversationId: String, message: String): Triple<Boolean, ChatResponse?, String?> = withContext(Dispatchers.IO) {
+        try {
+            val req = ChatRequest(conversationId = conversationId, message = message)
+            val resp = api.sendChatMessage(req)
+            if (resp.isSuccessful) {
+                Triple(true, resp.body(), null)
+            } else {
+                val err = try { resp.errorBody()?.string() } catch (e: Exception) { null }
+                Triple(false, resp.body(), err ?: "HTTP ${resp.code()}")
+            }
+        } catch (e: Exception) {
+            Triple(false, null, "${e::class.simpleName}: ${e.message}")
+        }
+    }
+
+    suspend fun getChatHistory(conversationId: String): Triple<Boolean, ConversationHistoryResponse?, String?> = withContext(Dispatchers.IO) {
+        try {
+            val resp = api.getChatHistory(conversationId)
+            if (resp.isSuccessful) {
+                Triple(true, resp.body(), null)
+            } else {
+                val err = try { resp.errorBody()?.string() } catch (e: Exception) { null }
+                Triple(false, resp.body(), err ?: "HTTP ${resp.code()}")
+            }
+        } catch (e: Exception) {
+            Triple(false, null, "${e::class.simpleName}: ${e.message}")
+        }
+    }
+
 }

@@ -1,0 +1,4 @@
+Need to:
+1. Keep FeaturedServiceCard simple - add clickable modifier
+2. Keep ServiceCard simple - add clickable modifier  
+3. Wire the clicks to check service.route == "/ai/nlp" and call onNavigateToChatbot()
