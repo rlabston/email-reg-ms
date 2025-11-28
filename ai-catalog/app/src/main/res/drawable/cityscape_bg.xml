@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="1200dp"
+    android:height="800dp"
+    android:viewportWidth="1200"
+    android:viewportHeight="800">
+    
+    <!-- Sky gradient background -->
+    <path
+        android:pathData="M0,0 L1200,0 L1200,800 L0,800 Z"
+        android:fillColor="#1a1a2e"/>
+    
+    <!-- Building 1 - Left tall building -->
+    <path
+        android:pathData="M50,300 L150,300 L150,700 L50,700 Z"
+        android:fillColor="#0f3460"/>
+    <path
+        android:pathData="M60,320 L70,320 L70,340 L60,340 Z"
+        android:fillColor="#16213e"/>
+    <path
+        android:pathData="M80,320 L90,320 L90,340 L80,340 Z"
+        android:fillColor="#16213e"/>
+    <path
+        android:pathData="M100,320 L110,320 L110,340 L100,340 Z"
+        android:fillColor="#16213e"/>
+    <path
+        android:pathData="M120,320 L130,320 L130,340 L120,340 Z"
+        android:fillColor="#16213e"/>
+    
+    <!-- Building 2 - Medium building -->
+    <path
+        android:pathData="M200,400 L320,400 L320,700 L200,700 Z"
+        android:fillColor="#16213e"/>
+    <path
+        android:pathData="M220,420 L240,420 L240,450 L220,450 Z"
+        android:fillColor="#0f3460"/>
+    <path
+        android:pathData="M260,420 L280,420 L280,450 L260,450 Z"
+        android:fillColor="#0f3460"/>
+    
+    <!-- Building 3 - Tallest building (center) -->
+    <path
+        android:pathData="M380,200 L520,200 L520,700 L380,700 Z"
+        android:fillColor="#0f3460"/>
+    <path
+        android:pathData="M400,220 L420,220 L420,250 L400,250 Z"
+        android:fillColor="#533483"/>
+    <path
+        android:pathData="M440,220 L460,220 L460,250 L440,250 Z"
+        android:fillColor="#533483"/>
+    <path
+        android:pathData="M480,220 L500,220 L500,250 L480,250 Z"
+        android:fillColor="#533483"/>
+    
+    <!-- Building 4 - Right medium building -->
+    <path
+        android:pathData="M580,350 L700,350 L700,700 L580,700 Z"
+        android:fillColor="#16213e"/>
+    <path
+        android:pathData="M600,370 L620,370 L620,400 L600,400 Z"
+        android:fillColor="#0f3460"/>
+    <path
+        android:pathData="M640,370 L660,370 L660,400 L640,400 Z"
+        android:fillColor="#0f3460"/>
+    
+    <!-- Building 5 - Short right building -->
+    <path
+        android:pathData="M750,450 L850,450 L850,700 L750,700 Z"
+        android:fillColor="#0f3460"/>
+    <path
+        android:pathData="M770,470 L790,470 L790,500 L770,500 Z"
+        android:fillColor="#16213e"/>
+    <path
+        android:pathData="M810,470 L830,470 L830,500 L810,500 Z"
+        android:fillColor="#16213e"/>
+    
+    <!-- Building 6 - Far right tall building -->
+    <path
+        android:pathData="M900,280 L1000,280 L1000,700 L900,700 Z"
+        android:fillColor="#0f3460"/>
+    <path
+        android:pathData="M920,300 L940,300 L940,330 L920,330 Z"
+        android:fillColor="#533483"/>
+    <path
+        android:pathData="M960,300 L980,300 L980,330 L960,330 Z"
+        android:fillColor="#533483"/>
+    
+    <!-- Building 7 - Far right medium -->
+    <path
+        android:pathData="M1050,380 L1150,380 L1150,700 L1050,700 Z"
+        android:fillColor="#16213e"/>
+    <path
+        android:pathData="M1070,400 L1090,400 L1090,430 L1070,430 Z"
+        android:fillColor="#0f3460"/>
+    <path
+        android:pathData="M1110,400 L1130,400 L1130,430 L1110,430 Z"
+        android:fillColor="#0f3460"/>
+</vector>

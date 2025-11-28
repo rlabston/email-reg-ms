@@ -87,8 +87,8 @@ fun CatalogApp(modifier: Modifier = Modifier) {
     Box(modifier = Modifier.fillMaxSize()) {
         // Cityscape background image
         Image(
-            painter = painterResource(id = R.drawable.bg),
-            contentDescription = "App background",
+            painter = painterResource(id = R.drawable.cityscape),
+            contentDescription = "Cityscape background",
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop,
         )
@@ -121,8 +121,8 @@ fun CatalogApp(modifier: Modifier = Modifier) {
                 Log.d("CatalogApp", "HomeScreen composing - drawable ids: bg=${R.drawable.bg}")
                 HomeScreen(
                     onLogout = {
-                        Log.d("CatalogApp", "User logged out, navigating to login")
-                        navController.navigate("login") {
+                        Log.d("CatalogApp", "User logged out, navigating to home/services page")
+                        navController.navigate("home") {
                             // Clear home screen from back stack
                             popUpTo("home") { inclusive = true }
                             launchSingleTop = true

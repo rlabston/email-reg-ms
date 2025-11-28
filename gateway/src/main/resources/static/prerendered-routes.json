@@ -1,0 +1,10 @@
+{
+  "routes": {
+    "/": {},
+    "/chatbot": {},
+    "/emails": {},
+    "/login": {},
+    "/ng-app-shell": {},
+    "/register": {}
+  }
+}

@@ -38,70 +38,30 @@ interface HomeScreenData {
   imports: [CommonModule],
   template: `
     <div class="home-container">
+      <div class="top-bar">
+        <div class="spacer"></div>
+        <div class="menu-wrapper">
+          <button class="hamburger-menu" (click)="menuOpen = !menuOpen" aria-label="Open menu">
+            &#9776;
+          </button>
+          <div class="dropdown-menu" *ngIf="menuOpen">
+            <a (click)="menuOpen = false">Home</a>
+            <a routerLink="/registration" (click)="menuOpen = false">Email Registration</a>
+            <a *ngIf="!isLoggedIn()" (click)="showLoginModal = true; menuOpen = false">Login</a>
+            <a routerLink="/chatbot" *ngIf="isLoggedIn()" (click)="menuOpen = false">AI Chatbot</a>
+            <a routerLink="/email-list" *ngIf="isAdmin()" (click)="menuOpen = false">View All Emails</a>
+            <a (click)="logout(); menuOpen = false" *ngIf="isLoggedIn()">Logout</a>
+          </div>
+        </div>
+      </div>
+      <!-- ...existing code... -->
       @if (isLoading()) {
         <div class="loading-card">
           <div class="spinner"></div>
           <p>Loading services...</p>
         </div>
       } @else if (homeData()) {
-        <!-- Welcome Section -->
-        <div class="welcome-section">
-          <h1>{{ homeData()!.welcomeTitle }}</h1>
-          <p class="subtitle">{{ homeData()!.welcomeSubtitle }}</p>
-        </div>
-
-        <!-- Featured Services -->
-        <section class="services-section">
-          <h2 class="section-title">Featured Services</h2>
-          <div class="horizontal-scroll">
-            @for (service of homeData()!.featuredServices; track service.title) {
-              <div class="featured-card">
-                <div class="card-header">
-                  <span class="service-icon">{{ service.icon }}</span>
-                  <span class="star-badge">⭐</span>
-                </div>
-                <h3>{{ service.title }}</h3>
-                <p>{{ service.description }}</p>
-                <button class="cta-button">{{ service.ctaText }}</button>
-              </div>
-            }
-          </div>
-        </section>
-
-        <!-- Service Categories -->
-        @for (category of getCategories(); track category) {
-          <section class="services-section">
-            <h2 class="section-title">{{ category }}</h2>
-            <div class="horizontal-scroll">
-              @for (service of homeData()!.servicesByCategory[category]; track service.title) {
-                <div class="service-card">
-                  <span class="service-icon">{{ service.icon }}</span>
-                  <h3>{{ service.title }}</h3>
-                  <p>{{ service.description }}</p>
-                  <button class="cta-button-small">{{ service.ctaText }}</button>
-                </div>
-              }
-            </div>
-          </section>
-        }
-
-        <!-- Technologies -->
-        <section class="technologies-section">
-          <h2 class="section-title">Technologies We Use</h2>
-          <div class="tech-pills">
-            @for (tech of homeData()!.supportedTechnologies; track tech) {
-              <span class="tech-pill">{{ tech }}</span>
-            }
-          </div>
-        </section>
-
-        <!-- Contact -->
-        <section class="contact-section">
-          <h2 class="section-title">Get In Touch</h2>
-          <p><strong>Email:</strong> {{ homeData()!.contactInfo.email }}</p>
-          <p><strong>Phone:</strong> {{ homeData()!.contactInfo.phone }}</p>
-          <p><strong>Location:</strong> {{ homeData()!.contactInfo.address }}</p>
-        </section>
+        <!-- ...existing code... -->
       } @else {
         <div class="error-card">
           <h2>Error loading services</h2>
@@ -109,6 +69,10 @@ interface HomeScreenData {
           <button (click)="loadHomeData()">Retry</button>
         </div>
       }
+      <!-- Login Modal Overlay -->
+      <div class="login-modal-overlay" *ngIf="showLoginModal">
+        <app-login (close)="showLoginModal = false" (loggedIn)="showLoginModal = false; reloadHomeData()"></app-login>
+      </div>
     </div>
   `,
   styles: [`
@@ -116,7 +80,8 @@ interface HomeScreenData {
       padding: 20px;
       max-width: 1400px;
       margin: 0 auto;
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      background: url('/assets/cityscape.png') center/cover no-repeat;
+      background-attachment: fixed;
       min-height: 100vh;
     }
 
@@ -146,7 +111,7 @@ interface HomeScreenData {
     }
 
     .welcome-section {
-      background: rgba(0, 0, 0, 0.8);
+      background: transparent;
       border-radius: 12px;
       padding: 40px;
       text-align: center;
@@ -198,74 +163,31 @@ interface HomeScreenData {
       background: rgba(255, 255, 255, 0.3);
       border-radius: 4px;
     }
-
-    .featured-card {
-      background: rgba(0, 0, 0, 0.8);
-      border-radius: 12px;
+  styles: [`
+    .home-container {
       padding: 20px;
-      min-width: 320px;
-      max-width: 320px;
-      height: 260px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      color: white;
+      max-width: 1400px;
+      margin: 0 auto;
+      background: url('/assets/cityscape.png') center/cover no-repeat;
+      background-attachment: fixed;
+      min-height: 100vh;
+      position: relative;
     }
-
-    .service-card {
-      background: rgba(0, 0, 0, 0.7);
-      border-radius: 12px;
-      padding: 20px;
-      min-width: 280px;
-      max-width: 280px;
-      height: 220px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      color: white;
-    }
-
-    .card-header {
+    .login-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(30,33,50,0.85);
+      z-index: 1000;
       display: flex;
       align-items: center;
-      gap: 12px;
+      justify-content: center;
+      backdrop-filter: blur(8px);
     }
-
-    .service-icon {
-      font-size: 2rem;
-    }
-
-    .star-badge {
-      color: #ffd700;
-      font-size: 1.25rem;
-    }
-
-    .featured-card h3, .service-card h3 {
-      font-size: 1.1rem;
-      font-weight: bold;
-      margin: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-    }
-
-    .featured-card p, .service-card p {
-      color: #aaa;
-      font-size: 0.9rem;
-      flex: 1;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      margin: 0;
-    }
-
-    .cta-button {
-      background: transparent;
-      border: 1px solid white;
+    // ...existing code...
+  `]
       color: white;
       padding: 10px 20px;
       border-radius: 6px;
@@ -295,7 +217,7 @@ interface HomeScreenData {
     }
 
     .technologies-section {
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0.3);
       border-radius: 12px;
       padding: 24px;
       margin-bottom: 24px;
@@ -322,7 +244,7 @@ interface HomeScreenData {
     }
 
     .contact-section {
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0.3);
       border-radius: 12px;
       padding: 24px;
       color: white;

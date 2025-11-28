@@ -75,53 +75,94 @@ fun HomeScreen(
                     // Use rich mock data based on Technet7 services
                     homeData = createTechnet7ServicesData()
                 }
-                isLoading = false
-            } catch (e: Exception) {
-                // Fallback to rich mock data on any error
-                homeData = createTechnet7ServicesData()
-                isLoading = false
-                Log.d("HomeScreen", "Using mock data due to: ${e.message}")
-            }
-        }
+                fun HomeScreen(
+                    modifier: Modifier = Modifier,
+                    onLogout: () -> Unit = {},
+                    onNavigateToEmails: (String) -> Unit = {},
+                    onNavigateToChatbot: () -> Unit = {},
+                    onLogin: () -> Unit = {}
+                ) {
     }
 
     Scaffold(
-        containerColor = Color.Transparent,
-        topBar = {
-            TopAppBar(
-                title = { 
-                    Text(
-                        text = "Email Registration Services",
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
-                    ) 
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent
-                ),
-                actions = {
-                    val userEmail = AuthManager.getEmail()
-                    val isLoggedIn = userEmail != null
-                    val isAdmin = AuthManager.getRoles().contains("ROLE_ADMIN")
-                    var menuExpanded by remember { mutableStateOf(false) }
-                    
-                    // Hamburger menu (three-dot icon)
-                    IconButton(onClick = { menuExpanded = true }) {
-                        Icon(
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = "Menu",
-                            tint = Color.White
-                        )
-                    }
-                    
-                    DropdownMenu(
-                        expanded = menuExpanded,
-                        onDismissRequest = { menuExpanded = false }
-                    ) {
-                        // Home (all users)
-                        DropdownMenuItem(
-                            text = { Text("Home") },
-                            onClick = {
+                        topBar = {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 8.dp, end = 16.dp),
+                                horizontalArrangement = Arrangement.End,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                val userEmail = AuthManager.getEmail()
+                                val isLoggedIn = userEmail != null
+                                val isAdmin = AuthManager.getRoles().contains("ROLE_ADMIN")
+                                var menuExpanded by remember { mutableStateOf(false) }
+                                // Hamburger menu (top right)
+                                IconButton(onClick = { menuExpanded = true }) {
+                                    Icon(
+                                        imageVector = Icons.Default.MoreVert,
+                                        contentDescription = "Menu",
+                                        tint = Color.White,
+                                        modifier = Modifier.size(36.dp)
+                                    )
+                                }
+                                DropdownMenu(
+                                    expanded = menuExpanded,
+                                    onDismissRequest = { menuExpanded = false }
+                                ) {
+                                    DropdownMenuItem(
+                                        text = { Text("Home") },
+                                        onClick = {
+                                            menuExpanded = false
+                                        }
+                                    )
+                                    DropdownMenuItem(
+                                        text = { Text("Email Registration") },
+                                        onClick = {
+                                            menuExpanded = false
+                                            onNavigateToEmails("register")
+                                        }
+                                    )
+                                    if (!isLoggedIn) {
+                                        DropdownMenuItem(
+                                            text = { Text("Login") },
+                                            onClick = {
+                                                menuExpanded = false
+                                                onLogin()
+                                            }
+                                        )
+                                    }
+                                    if (isLoggedIn) {
+                                        DropdownMenuItem(
+                                            text = { Text("AI Chatbot") },
+                                            onClick = {
+                                                menuExpanded = false
+                                                onNavigateToChatbot()
+                                            }
+                                        )
+                                    }
+                                    if (isAdmin) {
+                                        DropdownMenuItem(
+                                            text = { Text("View All Emails") },
+                                            onClick = {
+                                                menuExpanded = false
+                                                onNavigateToEmails("list")
+                                            }
+                                        )
+                                    }
+                                    if (isLoggedIn) {
+                                        DropdownMenuItem(
+                                            text = { Text("Logout ($userEmail)") },
+                                            onClick = {
+                                                menuExpanded = false
+                                                AuthManager.clearAuth()
+                                                onLogout()
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+                        },
                                 menuExpanded = false
                                 // Already on home; no-op
                             }

@@ -8,10 +8,6 @@ import { ChatbotComponent } from './chatbot/chatbot.component';
 
 export const routes: Routes = [
   {
-    path: 'login',
-    component: LoginComponent
-  },
-  {
     path: '',
     pathMatch: 'full',
     component: HomeComponent
