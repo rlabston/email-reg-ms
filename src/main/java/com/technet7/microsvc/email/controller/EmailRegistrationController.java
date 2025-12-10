@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,6 +24,7 @@ import com.technet7.microsvc.email.dto.LoginRequest;
 import com.technet7.microsvc.email.dto.LoginResponse;
 import com.technet7.microsvc.email.dto.RegisteredEmailDto;
 import com.technet7.microsvc.email.dto.RegisteredEmailWithRolesDto;
+import com.technet7.microsvc.email.dto.UpdateUserRequest;
 import com.technet7.microsvc.email.exception.EmailAlreadyRegisteredException;
 import com.technet7.microsvc.email.security.JwtService;
 import com.technet7.microsvc.email.service.EmailRegistrationService;
@@ -45,7 +47,8 @@ public class EmailRegistrationController {
     @PostMapping("/register")
     public ResponseEntity<?> registerEmail(@Valid @RequestBody com.technet7.microsvc.email.dto.EmailRegistrationRequest request) {
         try {
-            return ResponseEntity.ok(emailRegistrationService.registerEmail(request.getEmail(), request.getUsername(), request.getPassword()));
+            return ResponseEntity.ok(emailRegistrationService.registerEmail(
+                request.getEmail(), request.getUsername(), request.getPassword(), request.getRoles()));
         } catch (EmailAlreadyRegisteredException e) {
             return ResponseEntity.badRequest().body(new EmailRegistrationResponse(request.getEmail(), null, e.getMessage()));
         }
@@ -83,6 +86,23 @@ public class EmailRegistrationController {
             .collect(Collectors.toList());
 
         return ResponseEntity.ok(result);
+    }
+
+    /**
+     * Get single user with roles by ID.
+     * GET /emails/with-roles/{id}
+     */
+    @GetMapping("/with-roles/{id}")
+    public ResponseEntity<RegisteredEmailWithRolesDto> getUserWithRoles(@PathVariable Long id) {
+        return emailRegistrationService.getRegisteredEmailById(id)
+            .map(e -> ResponseEntity.ok(new RegisteredEmailWithRolesDto(
+                e.getId(),
+                e.getEmail(),
+                e.getUsername(),
+                e.getRegistrationDate(),
+                e.getRoles().stream().map(r -> r.getName()).collect(java.util.stream.Collectors.toSet())
+            )))
+            .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/login")
@@ -142,6 +162,20 @@ public class EmailRegistrationController {
     public ResponseEntity<?> deleteByEmail(@RequestParam String email) {
         boolean deleted = emailRegistrationService.deleteByEmail(email);
         return deleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
+    }
+
+    /**
+     * Update an existing user by ID.
+     * PUT /emails/{id}
+     */
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserRequest request) {
+        return emailRegistrationService.updateUser(id, request.getEmail(), request.getUsername(), 
+                request.getPassword(), request.getRoles())
+            .map(user -> ResponseEntity.ok(new RegisteredEmailDto(
+                user.getId(), user.getEmail(), user.getUsername(), user.getRegistrationDate()
+            )))
+            .orElse(ResponseEntity.notFound().build());
     }
 
     // using EmailRegistrationRequest DTO class

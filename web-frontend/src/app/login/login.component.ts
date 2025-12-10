@@ -279,29 +279,10 @@ export class LoginComponent {
       next: (response) => {
         console.log('[SPA-login] login response', response);
         this.isLoading.set(false);
-        // Store session (email, username, roles)
+        // Store token in memory (all user data extracted from token on-demand)
         if (isPlatformBrowser(this.platformId)) {
-          try {
-            this.authService.setSession(response.email, response.username, response.roles || []);
-            // Save token if present
-            if ((response as any).token) {
-              localStorage.setItem('auth_token', (response as any).token);
-            }
-            if (typeof (response as any).expiresInMs === 'number') {
-              const expMs = Number((response as any).expiresInMs);
-              localStorage.setItem('auth_token_expires_in_ms', String(expMs));
-              localStorage.setItem('auth_token_expires_at', String(Date.now() + expMs));
-            }
-          } catch (e) {
-            console.warn('[SPA-login] session set failed', e);
-            try {
-              localStorage.setItem('auth_email', response.email);
-              localStorage.setItem('auth_username', response.username);
-              localStorage.setItem('auth_roles', JSON.stringify(response.roles || []));
-              if ((response as any).token) localStorage.setItem('auth_token', (response as any).token);
-            } catch (e2) {
-              // ignore
-            }
+          if ((response as any).token) {
+            this.authService.setToken((response as any).token);
           }
         }
         // Navigate to main app

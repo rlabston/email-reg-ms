@@ -1,5 +1,6 @@
 import { Component, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { EmailRegistrationService } from '../services/email-registration.service';
 import { RegisteredEmailDto } from '../models/registered-email.model';
 
@@ -41,6 +42,7 @@ import { RegisteredEmailDto } from '../models/registered-email.model';
         </table>
 
         <div class="list-actions" style="margin-top:12px;" *ngIf="emails().length > 0">
+          <button type="button" (click)="editSelected()" [disabled]="!selectedEmail()">Edit Selected</button>
           <button type="button" (click)="deleteSelected()" [disabled]="!selectedEmail()">Delete Selected</button>
         </div>
 
@@ -59,11 +61,15 @@ import { RegisteredEmailDto } from '../models/registered-email.model';
 export class EmailListComponent implements OnInit {
   emails = signal<RegisteredEmailDto[]>([]);
   selectedEmail = signal<string | null>(null);
+  selectedEmailData = signal<RegisteredEmailDto | null>(null);
   listLoading = signal(false);
   statusMessage = signal('');
   isError = signal(false);
 
-  constructor(private emailService: EmailRegistrationService) {}
+  constructor(
+    private emailService: EmailRegistrationService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     // Load emails when component initializes
@@ -71,7 +77,46 @@ export class EmailListComponent implements OnInit {
   }
 
   selectEmail(e: RegisteredEmailDto): void {
-    this.selectedEmail.set(this.selectedEmail() === e.email ? null : e.email);
+    if (this.selectedEmail() === e.email) {
+      this.selectedEmail.set(null);
+      this.selectedEmailData.set(null);
+    } else {
+      this.selectedEmail.set(e.email);
+      this.selectedEmailData.set(e);
+    }
+  }
+
+  editSelected(): void {
+    const emailData = this.selectedEmailData();
+    if (!emailData) return;
+    
+    // Fetch full user data with roles before navigating
+    this.emailService.getUserWithRoles(emailData.id).subscribe({
+      next: (userData) => {
+        this.router.navigate(['/register'], {
+          queryParams: {
+            edit: 'true',
+            id: userData.id,
+            email: userData.email,
+            username: userData.username,
+            roles: userData.roles?.join(',') || ''
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Failed to fetch user roles', err);
+        // Fallback: navigate without roles
+        this.router.navigate(['/register'], {
+          queryParams: {
+            edit: 'true',
+            id: emailData.id,
+            email: emailData.email,
+            username: emailData.username,
+            roles: ''
+          }
+        });
+      }
+    });
   }
 
   deleteSelected(): void {

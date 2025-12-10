@@ -4,8 +4,8 @@ import { Observable, tap } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 
 /**
- * Interceptor that reads X-New-JWT and X-JWT-Expires-In from responses and
- * persists refreshed tokens to localStorage (via AuthService).
+ * Interceptor that reads X-New-JWT from responses and updates the in-memory token.
+ * Backend is the single source of truth - token is stored in memory only, not localStorage.
  */
 @Injectable()
 export class TokenRefreshInterceptor implements HttpInterceptor {
@@ -16,19 +16,9 @@ export class TokenRefreshInterceptor implements HttpInterceptor {
       tap((event) => {
         if (event instanceof HttpResponse) {
           const newJwt = event.headers.get('X-New-JWT');
-          const expiresMs = event.headers.get('X-JWT-Expires-In');
           if (newJwt) {
-            try {
-              // persist token and computed expiry fields the same way login does
-              localStorage.setItem('auth_token', newJwt);
-              if (expiresMs) {
-                const exp = Number(expiresMs);
-                localStorage.setItem('auth_token_expires_in_ms', String(exp));
-                localStorage.setItem('auth_token_expires_at', String(Date.now() + exp));
-              }
-            } catch (e) {
-              // ignore storage errors
-            }
+            // Store token in memory only - backend is single source of truth
+            this.auth.setToken(newJwt);
           }
         }
       })

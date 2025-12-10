@@ -36,12 +36,16 @@ if [ -z "$BACKEND_JAR" ] || [ -z "$GATEWAY_JAR" ]; then
   exit 1
 fi
 
-# Parse optional flags
-FORCE=false
+# Parse optional flags (default to FORCE=true for reliability)
+FORCE=true
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --force)
       FORCE=true
+      shift
+      ;;
+    --no-force)
+      FORCE=false
       shift
       ;;
     *)

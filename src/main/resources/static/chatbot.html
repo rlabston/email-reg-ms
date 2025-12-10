@@ -223,7 +223,25 @@
     <script>
         const API_BASE_URL = 'http://localhost:8080/api/chat';
         let conversationId = null;
-        let authToken = null; // Set this after login
+        let authToken = null;
+
+        // Get token from URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const tokenFromUrl = urlParams.get('token');
+        if (tokenFromUrl) {
+            authToken = tokenFromUrl;
+            console.log('Auth token received from URL');
+        }
+
+        // Listen for token from parent window (postMessage)
+        window.addEventListener('message', (event) => {
+            if (event.origin !== window.location.origin) return;
+            
+            if (event.data && event.data.type === 'AUTH_TOKEN') {
+                authToken = event.data.token;
+                console.log('Auth token received from parent window');
+            }
+        });
 
         const chatMessages = document.getElementById('chatMessages');
         const messageInput = document.getElementById('messageInput');

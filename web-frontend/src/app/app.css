@@ -8,9 +8,7 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-  background-size: cover;
-  background-attachment: fixed;
+  background: transparent;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   padding: 20px;
   position: relative;
@@ -41,7 +39,7 @@
   margin-bottom: 20px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   position: relative;
-  z-index: 10;
+  z-index: 100;
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -69,7 +67,8 @@
   border: none;
   cursor: pointer;
   padding: 0;
-  z-index: 10;
+  z-index: 1001;
+  position: relative;
 }
 
 .hamburger-menu span {
@@ -99,7 +98,7 @@
   visibility: hidden;
   transform: translateY(-10px);
   transition: all 0.3s ease;
-  z-index: 9999;
+  z-index: 101;
 }
 
 .menu-dropdown.active {
@@ -423,4 +422,74 @@
 .list-actions button[disabled] {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+/* Footer Styles */
+.app-footer {
+  margin-top: auto;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px 12px 0 0;
+  padding: 30px 40px 20px;
+  color: #ffffff;
+  position: relative;
+  z-index: 10;
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 30px;
+  margin-bottom: 20px;
+}
+
+.footer-section h4 {
+  color: #667eea;
+  font-size: 16px;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.footer-section p {
+  color: #cccccc;
+  font-size: 14px;
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+
+.footer-section a {
+  display: block;
+  color: #cccccc;
+  text-decoration: none;
+  font-size: 14px;
+  margin-bottom: 8px;
+  transition: color 0.3s ease;
+  cursor: pointer;
+}
+
+.footer-section a:hover {
+  color: #667eea;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-bottom p {
+  color: #999999;
+  font-size: 13px;
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .app-footer {
+    padding: 20px;
+  }
 }

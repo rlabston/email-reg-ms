@@ -1,4 +1,4 @@
-<div class="app-shell">
+<div class="app-container">
   <div class="header-bar">
     <div class="header-left">
       <button type="button" class="hamburger-menu" (click)="toggleMenu()" aria-label="Toggle menu">
@@ -9,36 +9,75 @@
       <h3>{{ welcomeMessage() }}</h3>
     </div>
     <button *ngIf="authed()" type="button" class="logout-button" (click)="logout($event)">Logout</button>
-  </div>
-
-  <!-- Hamburger Menu Dropdown -->
-  <div class="menu-dropdown" [class.active]="menuOpen()">
-    <div class="menu-items">
-      <button type="button" class="menu-item" (click)="navigateTo('/')">
-        <span class="menu-icon">🏠</span>
-        <span class="menu-text">Home</span>
-      </button>
-      <button type="button" class="menu-item" (click)="navigateTo('/register')">
-        <span class="menu-icon">📧</span>
-        <span class="menu-text">Email Registration</span>
-      </button>
-      <button type="button" class="menu-item" *ngIf="!authed()" (click)="navigateTo('/login')">
-        <span class="menu-icon">🔐</span>
-        <span class="menu-text">Login</span>
-      </button>
-      <button type="button" class="menu-item" *ngIf="authed()" (click)="navigateTo('/chatbot')">
-        <span class="menu-icon">💬</span>
-        <span class="menu-text">AI Chatbot</span>
-      </button>
-      <button type="button" class="menu-item" *ngIf="isAdmin()" (click)="navigateTo('/emails')">
-        <span class="menu-icon">📋</span>
-        <span class="menu-text">View All Emails</span>
-      </button>
+    
+    <!-- Hamburger Menu Dropdown -->
+    <div class="menu-dropdown" [class.active]="menuOpen()">
+      <div class="menu-items">
+        <button type="button" class="menu-item" (click)="navigateTo('/')">
+          <span class="menu-icon">🏠</span>
+          <span class="menu-text">Home</span>
+        </button>
+        <button type="button" class="menu-item" *ngIf="!authed()" (click)="navigateTo('/register')">
+          <span class="menu-icon">📧</span>
+          <span class="menu-text">Register</span>
+        </button>
+        <button type="button" class="menu-item" *ngIf="!authed()" (click)="navigateTo('/login')">
+          <span class="menu-icon">🔐</span>
+          <span class="menu-text">Login</span>
+        </button>
+        <button type="button" class="menu-item" *ngIf="isAdmin()" (click)="navigateTo('/register')">
+          <span class="menu-icon">👤</span>
+          <span class="menu-text">Register User</span>
+        </button>
+        <button type="button" class="menu-item" *ngIf="authed()" (click)="navigateTo('/chatbot')">
+          <span class="menu-icon">💬</span>
+          <span class="menu-text">AI Chatbot</span>
+        </button>
+        <button type="button" class="menu-item" *ngIf="isAdmin()" (click)="navigateTo('/emails')">
+          <span class="menu-icon">📋</span>
+          <span class="menu-text">View All Emails</span>
+        </button>
+        <button type="button" class="menu-item" (click)="navigateTo('/about')">
+          <span class="menu-icon">ℹ️</span>
+          <span class="menu-text">About</span>
+        </button>
+        <button type="button" class="menu-item" (click)="navigateTo('/contact')">
+          <span class="menu-icon">📞</span>
+          <span class="menu-text">Contact</span>
+        </button>
+      </div>
     </div>
   </div>
 
   <div class="content-area">
     <router-outlet />
   </div>
+
+  <footer class="app-footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>Contact Us</h4>
+        <p>Email Registration Services</p>
+        <p>123 Tech Street</p>
+        <p>San Francisco, CA 94105</p>
+        <p>Email: info@emailreg.com</p>
+      </div>
+      <div class="footer-section">
+        <h4>Quick Links</h4>
+        <a (click)="navigateTo('/about')">About Us</a>
+        <a (click)="navigateTo('/contact')">Contact</a>
+        <a (click)="navigateTo('/')">Home</a>
+      </div>
+      <div class="footer-section">
+        <h4>Legal</h4>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Cookie Policy</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 Email Registration Service. All rights reserved.</p>
+    </div>
+  </footer>
 </div>
 

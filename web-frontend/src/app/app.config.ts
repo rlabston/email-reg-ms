@@ -3,6 +3,7 @@ import { provideClientHydration, withEventReplay } from '@angular/platform-brows
 import { provideHttpClient, withFetch, withInterceptorsFromDi, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { TokenRefreshInterceptor } from './interceptors/token-refresh.interceptor';
 import { GlobalErrorHandler } from './error/global-error.handler';
 
@@ -13,7 +14,8 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withEventReplay()),
     provideHttpClient(withFetch(), withInterceptorsFromDi()),
     provideRouter(routes),
-    // Register interceptor to persist refreshed tokens sent by the backend
+    // Auth interceptor MUST run BEFORE token-refresh interceptor
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: TokenRefreshInterceptor, multi: true },
     { provide: ErrorHandler, useClass: GlobalErrorHandler }
   ]

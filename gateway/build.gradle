@@ -17,9 +17,11 @@ java {
 dependencies {
     // Use WebFlux (reactive) stack for Spring Cloud Gateway
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    // Spring Cloud Gateway for routing and filters
-    implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    // Spring Cloud Gateway for routing and filters (using non-deprecated dependency)
+    implementation 'org.springframework.cloud:spring-cloud-gateway-server-webflux'
+    // LoadBalancer client (required by gateway, provides API even without actual load balancing)
+    implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
     // no heavy extra dependencies beyond Spring Cloud Gateway
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
 interface ServiceItem {
@@ -35,54 +36,73 @@ interface HomeScreenData {
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   template: `
     <div class="home-container">
-      <div class="top-bar">
-        <div class="spacer"></div>
-        <div class="menu-wrapper">
-          <button class="hamburger-menu" (click)="menuOpen = !menuOpen" aria-label="Open menu">
-            &#9776;
-          </button>
-          <div class="dropdown-menu" *ngIf="menuOpen">
-            <a (click)="menuOpen = false">Home</a>
-            <a routerLink="/registration" (click)="menuOpen = false">Email Registration</a>
-            <a *ngIf="!isLoggedIn()" (click)="showLoginModal = true; menuOpen = false">Login</a>
-            <a routerLink="/chatbot" *ngIf="isLoggedIn()" (click)="menuOpen = false">AI Chatbot</a>
-            <a routerLink="/email-list" *ngIf="isAdmin()" (click)="menuOpen = false">View All Emails</a>
-            <a (click)="logout(); menuOpen = false" *ngIf="isLoggedIn()">Logout</a>
-          </div>
-        </div>
-      </div>
-      <!-- ...existing code... -->
-      @if (isLoading()) {
+
+      <div *ngIf="isLoading()">
         <div class="loading-card">
           <div class="spinner"></div>
           <p>Loading services...</p>
         </div>
-      } @else if (homeData()) {
-        <!-- ...existing code... -->
-      } @else {
+      </div>
+
+      <div *ngIf="!isLoading() && homeData()">
+        <div class="welcome-section">
+          <h1>{{ homeData()?.welcomeTitle }}</h1>
+          <p class="subtitle">{{ homeData()?.welcomeSubtitle }}</p>
+        </div>
+
+        <div class="services-section" *ngFor="let category of getCategories()">
+          <h2 class="section-title">{{ category }}</h2>
+          <div class="horizontal-scroll">
+            <div class="service-card" *ngFor="let service of homeData()?.servicesByCategory[category]">
+              <div class="service-icon">{{ service.icon }}</div>
+              <h3>{{ service.title }}</h3>
+              <p class="service-description">{{ service.description }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="technologies-section" *ngIf="homeData()?.supportedTechnologies?.length">
+          <h2 class="section-title">Technologies We Use</h2>
+          <div class="tech-pills">
+            <span class="tech-pill" *ngFor="let tech of homeData()?.supportedTechnologies">{{ tech }}</span>
+          </div>
+        </div>
+
+        <div class="contact-section" *ngIf="homeData()?.contactInfo">
+          <h2 class="section-title">Get In Touch</h2>
+          <p><strong>Email:</strong> {{ homeData()?.contactInfo.email }}</p>
+          <p><strong>Phone:</strong> {{ homeData()?.contactInfo.phone }}</p>
+          <p><strong>Location:</strong> {{ homeData()?.contactInfo.address }}</p>
+        </div>
+      </div>
+
+      <div *ngIf="!isLoading() && !homeData()">
         <div class="error-card">
           <h2>Error loading services</h2>
           <p>{{ error() }}</p>
           <button (click)="loadHomeData()">Retry</button>
         </div>
-      }
+      </div>
+
       <!-- Login Modal Overlay -->
       <div class="login-modal-overlay" *ngIf="showLoginModal">
         <app-login (close)="showLoginModal = false" (loggedIn)="showLoginModal = false; reloadHomeData()"></app-login>
       </div>
     </div>
   `,
-  styles: [`
+  styles: [
+    `
     .home-container {
       padding: 20px;
       max-width: 1400px;
       margin: 0 auto;
-      background: url('/assets/cityscape.png') center/cover no-repeat;
-      background-attachment: fixed;
+      background: transparent;
       min-height: 100vh;
+      position: relative;
+      color: white;
     }
 
     .loading-card, .error-card {
@@ -105,37 +125,31 @@ interface HomeScreenData {
       margin: 0 auto 20px;
     }
 
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    .welcome-section {
-      background: transparent;
-      border-radius: 12px;
-      padding: 40px;
-      text-align: center;
-      margin-bottom: 24px;
-      color: white;
+    .welcome-section { 
+      background: transparent; 
+      border-radius: 12px; 
+      padding: 40px; 
+      text-align: center; 
+      margin-bottom: 24px; 
     }
 
     .welcome-section h1 {
       font-size: 2.5rem;
-      font-weight: bold;
       margin-bottom: 12px;
     }
 
-    .subtitle {
-      font-size: 1.25rem;
-      color: #aaa;
+    .subtitle { 
+      font-size: 1.25rem; 
+      color: #ccc; 
     }
 
     .services-section {
-      margin-bottom: 24px;
+      margin-bottom: 32px;
     }
 
     .section-title {
-      color: white;
       font-size: 1.75rem;
       font-weight: bold;
       margin-bottom: 16px;
@@ -146,7 +160,7 @@ interface HomeScreenData {
       display: flex;
       gap: 16px;
       overflow-x: auto;
-      padding: 8px 8px 16px;
+      padding: 8px;
       scrollbar-width: thin;
       scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
     }
@@ -155,65 +169,35 @@ interface HomeScreenData {
       height: 8px;
     }
 
-    .horizontal-scroll::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
     .horizontal-scroll::-webkit-scrollbar-thumb {
       background: rgba(255, 255, 255, 0.3);
       border-radius: 4px;
     }
-  styles: [`
-    .home-container {
-      padding: 20px;
-      max-width: 1400px;
-      margin: 0 auto;
-      background: url('/assets/cityscape.png') center/cover no-repeat;
-      background-attachment: fixed;
-      min-height: 100vh;
-      position: relative;
-    }
-    .login-modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(30,33,50,0.85);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      backdrop-filter: blur(8px);
-    }
-    // ...existing code...
-  `]
-      color: white;
-      padding: 10px 20px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.85rem;
-      transition: all 0.2s;
+
+    .service-card {
+      background: rgba(0, 0, 0, 0.5);
+      border-radius: 12px;
+      padding: 24px;
+      min-width: 300px;
+      max-width: 350px;
+      flex-shrink: 0;
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .cta-button:hover {
-      background: white;
-      color: #1a1a2e;
+    .service-icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
     }
 
-    .cta-button-small {
-      background: transparent;
-      border: 1px solid white;
-      color: white;
-      padding: 8px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.8rem;
-      transition: all 0.2s;
+    .service-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 12px;
     }
 
-    .cta-button-small:hover {
-      background: rgba(255, 255, 255, 0.1);
+    .service-description {
+      color: #ccc;
+      font-size: 0.95rem;
+      line-height: 1.5;
     }
 
     .technologies-section {
@@ -221,11 +205,6 @@ interface HomeScreenData {
       border-radius: 12px;
       padding: 24px;
       margin-bottom: 24px;
-    }
-
-    .technologies-section .section-title {
-      padding: 0;
-      margin-bottom: 16px;
     }
 
     .tech-pills {
@@ -236,29 +215,20 @@ interface HomeScreenData {
 
     .tech-pill {
       background: rgba(255, 255, 255, 0.1);
-      color: white;
       padding: 8px 16px;
       border-radius: 20px;
       font-size: 0.9rem;
-      display: inline-block;
     }
 
     .contact-section {
       background: rgba(0, 0, 0, 0.3);
       border-radius: 12px;
       padding: 24px;
-      color: white;
-    }
-
-    .contact-section .section-title {
-      padding: 0;
-      margin-bottom: 16px;
     }
 
     .contact-section p {
-      color: #aaa;
+      color: #ccc;
       margin: 8px 0;
-      font-size: 1rem;
     }
 
     .error-card button {
@@ -268,19 +238,36 @@ interface HomeScreenData {
       padding: 12px 24px;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 1rem;
       margin-top: 16px;
     }
 
     .error-card button:hover {
       background: #0056b3;
     }
-  `]
+
+    .login-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(30, 33, 50, 0.85);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(8px);
+    }
+    `
+  ]
 })
 export class HomeComponent implements OnInit {
   homeData = signal<HomeScreenData | null>(null);
   isLoading = signal(true);
   error = signal<string | null>(null);
+  // UI state
+  menuOpen = false;
+  showLoginModal = false;
 
   constructor(private http: HttpClient) {}
 
@@ -304,6 +291,25 @@ export class HomeComponent implements OnInit {
         this.isLoading.set(false);
       }
     });
+  }
+
+  // Minimal auth stubs so menu shows correctly in the web frontend.
+  // Replace with real auth integration as needed.
+  isLoggedIn(): boolean {
+    return false;
+  }
+
+  isAdmin(): boolean {
+    return false;
+  }
+
+  logout(): void {
+    // no-op for now; clear session when auth is wired
+    this.menuOpen = false;
+  }
+
+  reloadHomeData(): void {
+    this.loadHomeData();
   }
 
   getCategories(): string[] {

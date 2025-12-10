@@ -1,0 +1,265 @@
+<!DOCTYPE html><html lang="en" data-beasties-container><head>
+  <meta charset="utf-8">
+  <title>WebFrontend</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <script>
+    // Wire up the static fallback's interactivity: password toggle and login POST
+    (function(){
+      try {
+        function init() {
+          var toggle = document.getElementById('static-toggle');
+          var pwd = document.getElementById('static-password');
+          var btn = document.getElementById('static-login-btn');
+          var email = document.getElementById('static-email');
+          var err = document.getElementById('static-error');
+          if (!btn || !email || !pwd) return;
+
+          toggle && toggle.addEventListener('click', function(e){
+            try {
+              if (pwd.type === 'password') { pwd.type = 'text'; toggle.textContent = '🙈'; }
+              else { pwd.type = 'password'; toggle.textContent = '👁️'; }
+            } catch(e){ }
+          });
+
+          btn.addEventListener('click', function(){
+            (async function(){
+              try {
+                console.log('[static-login] submit clicked');
+                btn.disabled = true;
+                err.style.display = 'none';
+                var em = (email.value || '').trim();
+                var pw = (pwd.value || '').trim();
+                if (!em || !pw) {
+                  err.textContent = 'Please enter email and password';
+                  err.style.display = 'block';
+                  btn.disabled = false;
+                  return;
+                }
+                console.log('[static-login] posting to backend', em);
+                var res;
+                try {
+                  res = await fetch('/api/emails/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: em, password: pw }),
+                    // no credentials by default; backend is configured for CORS from localhost
+                  });
+                } catch (networkErr) {
+                  console.error('[static-login] fetch network error', networkErr);
+                  err.textContent = 'Network error: ' + (networkErr && networkErr.message || '');
+                  err.style.display = 'block';
+                  return;
+                }
+
+                // If the dev/static server isn't proxying /api (e.g. when serving prebuilt assets),
+                // it may answer 404/501/etc. In those cases try the backend directly as a fallback.
+                // Direct backend calls may be subject to CORS in some setups; the backend here allows
+                // requests from localhost during development, so this is a pragmatic fallback for devs.
+                if (res && (res.status === 404 || res.status === 501 || res.status === 405)) {
+                  try {
+                    console.warn('[static-login] received non-proxied response (' + res.status + ') from dev/static server; trying direct backend');
+                    // visible banner so the developer knows we are falling back to direct backend
+                    try {
+                      var fb = document.getElementById('static-backend-fallback');
+                      if (!fb) {
+                        fb = document.createElement('div');
+                        fb.id = 'static-backend-fallback';
+                        fb.style.position = 'fixed';
+                        fb.style.left = '50%';
+                        fb.style.top = '8px';
+                        fb.style.transform = 'translateX(-50%)';
+                        fb.style.zIndex = 10002;
+                        fb.style.background = '#ff9800';
+                        fb.style.color = '#111';
+                        fb.style.padding = '8px 12px';
+                        fb.style.borderRadius = '6px';
+                        fb.style.boxShadow = '0 6px 18px rgba(0,0,0,0.12)';
+                        fb.textContent = 'Dev/static server returned ' + res.status + ' — trying backend directly (127.0.0.1:8080)';
+                        document.body.appendChild(fb);
+                        // auto-dismiss after a short period
+                        setTimeout(function(){ try { fb.parentNode && fb.parentNode.removeChild(fb); } catch(e){} }, 6000);
+                      }
+                    } catch(e) { /* ignore banner errors */ }
+
+                    // Fall back to the gateway at 127.0.0.1:8080 (the frontend should use the gateway).
+                    res = await fetch('http://127.0.0.1:8080/api/emails/login', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ email: em, password: pw })
+                    });
+                  } catch (backendErr) {
+                    console.error('[static-login] direct backend fetch failed', backendErr);
+                    err.textContent = 'Network error: ' + (backendErr && backendErr.message || '');
+                    err.style.display = 'block';
+                    try { btn.disabled = false; } catch(_){}
+                    return;
+                  }
+                }
+
+                console.log('[static-login] response status', res.status);
+                if (res.ok) {
+                  // try to read JSON if present
+                  var body = null;
+                  try { body = await res.json(); } catch(e) { /* ignore JSON parse errors */ }
+                  try {
+                    localStorage.setItem('auth_email', em);
+                    if (body && body.username) localStorage.setItem('auth_username', body.username);
+                  } catch(e) { console.warn('[static-login] localStorage set failed', e); }
+
+                  // show a small success notice (outside the static login box so it survives small DOM changes)
+                  try {
+                    var success = document.createElement('div');
+                    success.id = 'static-success';
+                    success.style.position = 'fixed';
+                    success.style.right = '16px';
+                    success.style.top = '16px';
+                    success.style.background = '#2e7d32';
+                    success.style.color = 'white';
+                    success.style.padding = '10px 14px';
+                    success.style.borderRadius = '6px';
+                    success.style.zIndex = 10001;
+                    success.textContent = (body && body.message) ? (body.message + ' — redirecting...') : 'Login successful — redirecting...';
+                    document.body.appendChild(success);
+                  } catch(e){ console.warn('[static-login] could not show success notice', e); }
+
+                  // short delay so user can see the notification, then navigate.
+                  // Use a more robust navigation attempt sequence (replace -> href -> assign)
+                  (function(){
+                    var target = '/';
+                    var attempts = 0;
+                    var maxAttempts = 10;
+                    function tryNav() {
+                      attempts++;
+                      try {
+                        // preferred: replace (no history entry)
+                        window.location.replace(target);
+                        return;
+                      } catch(e) { /* ignore */ }
+                      try {
+                        // fallback: href
+                        window.location.href = target;
+                        return;
+                      } catch(e) { /* ignore */ }
+                      try {
+                        // last resort: assign
+                        window.location.assign(target);
+                        return;
+                      } catch(e) { /* ignore */ }
+                      if (attempts < maxAttempts) {
+                        setTimeout(tryNav, 200);
+                      } else {
+                        // final fallback: reload the page to encourage a navigation
+                        try { window.location.reload(); } catch(e) { /* give up */ }
+                      }
+                    }
+                    // small initial delay so the toast is visible
+                    setTimeout(tryNav, 350);
+                  })();
+                  return;
+                }
+
+                var text = 'Login failed';
+                try { var body = await res.json(); if (body) text = body.error || body.message || text; } catch(e){}
+                err.textContent = text;
+                err.style.display = 'block';
+              } catch(e) {
+                console.error('[static-login] unexpected error', e);
+                try { err.textContent = 'Unexpected error'; err.style.display = 'block'; } catch(_){}
+              } finally { try { btn.disabled = false; } catch(_){} }
+            })();
+          });
+        }
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+      } catch(e){}
+    })();
+  </script>
+  <script>
+    // If the server incorrectly rendered the App redirect message for /login,
+    // replace it with a minimal static login form so the page is usable
+    // while the client-side app hydrates.
+    (function(){
+      try {
+        if (typeof window === 'undefined' || typeof document === 'undefined') return;
+        console.log('[pre-bootstrap] login-fallback script running');
+        var p = window.location && window.location.pathname;
+        function replaceIfNeeded() {
+          try {
+            var root = document.querySelector('app-root');
+            if (!root) return;
+            // Avoid replacing app-root's internal DOM (this breaks Angular hydration).
+            // Instead, show the pre-existing `#static-login` overlay when we detect
+            // the server-rendered "Redirecting to login" placeholder on /login.
+            if (p === '/login' && /Redirecting to login/.test(root.innerText || '')) {
+              try {
+                document.getElementById('static-login').style.display = 'flex';
+                console.warn('[pre-bootstrap] static-login overlay shown because server rendered a redirect placeholder on', p);
+              } catch(e){}
+            }
+          } catch (e) { /* ignore */ }
+        }
+        if (document.readyState === 'loading') {
+              document.addEventListener('DOMContentLoaded', function() { replaceIfNeeded();
+                });
+    } else {
+      replaceIfNeeded();
+    }
+      } catch (e) { /* ignore */ }
+    })();
+  </script>
+<style>body{background:url(/assets/cityscape.png) center/cover no-repeat fixed;background-color:#1a1a2e;min-height:100vh;margin:0;padding:0}
+</style><link rel="stylesheet" href="styles-T7TDRADE.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="styles-T7TDRADE.css"></noscript><style ng-app-id="ng">*[_ngcontent-ng-c1907091599]{margin:0;padding:0;box-sizing:border-box}.app-container[_ngcontent-ng-c1907091599]{min-height:100vh;display:flex;flex-direction:column;background:transparent;font-family:Segoe UI,Tahoma,Geneva,Verdana,sans-serif;padding:20px;position:relative}.app-container[_ngcontent-ng-c1907091599]:before{content:"";position:fixed;inset:0;background:radial-gradient(circle at 20% 50%,rgba(102,126,234,.1) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(118,75,162,.1) 0%,transparent 50%);pointer-events:none;z-index:0}.header-bar[_ngcontent-ng-c1907091599]{display:flex;justify-content:space-between;align-items:center;padding:15px 30px;background:#00000080;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-radius:12px;margin-bottom:20px;box-shadow:0 4px 20px #0000004d;position:relative;z-index:100;border:1px solid rgba(255,255,255,.1)}.header-left[_ngcontent-ng-c1907091599]{display:flex;align-items:center;gap:15px}.header-bar[_ngcontent-ng-c1907091599]   h3[_ngcontent-ng-c1907091599]{color:#fff;font-size:18px;margin:0;font-weight:600}.hamburger-menu[_ngcontent-ng-c1907091599]{display:flex;flex-direction:column;justify-content:space-around;width:30px;height:24px;background:transparent;border:none;cursor:pointer;padding:0;z-index:1001;position:relative}.hamburger-menu[_ngcontent-ng-c1907091599]   span[_ngcontent-ng-c1907091599]{width:30px;height:3px;background-color:#fff;border-radius:2px;transition:all .3s ease}.hamburger-menu[_ngcontent-ng-c1907091599]:hover   span[_ngcontent-ng-c1907091599]{background-color:#667eea}.menu-dropdown[_ngcontent-ng-c1907091599]{position:absolute;top:calc(100% + 10px);left:30px;background:#000000e6;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);border-radius:12px;box-shadow:0 10px 40px #00000080;min-width:250px;opacity:0;visibility:hidden;transform:translateY(-10px);transition:all .3s ease;z-index:101}.menu-dropdown.active[_ngcontent-ng-c1907091599]{opacity:1;visibility:visible;transform:translateY(0)}.menu-items[_ngcontent-ng-c1907091599]{padding:8px}.menu-item[_ngcontent-ng-c1907091599]{display:flex;align-items:center;gap:12px;width:100%;padding:12px 16px;background:transparent;border:none;border-radius:8px;cursor:pointer;transition:background-color .2s;text-align:left;font-size:15px}.menu-item[_ngcontent-ng-c1907091599]:hover{background-color:#667eea33}.menu-icon[_ngcontent-ng-c1907091599]{font-size:20px;width:24px;text-align:center}.menu-text[_ngcontent-ng-c1907091599]{color:#fff;font-weight:500}.logout-button[_ngcontent-ng-c1907091599]{padding:8px 20px;background-color:#dc3545;color:#fff;border:none;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;transition:background-color .3s}.logout-button[_ngcontent-ng-c1907091599]:hover{background-color:#c82333}.registration-card[_ngcontent-ng-c1907091599]{background:#000000b3;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);border-radius:16px;box-shadow:0 20px 60px #00000080;padding:40px;width:100%;max-width:800px;margin:0 auto;position:relative;z-index:1}.title[_ngcontent-ng-c1907091599]{font-size:28px;font-weight:700;color:#fff;text-align:center;margin-bottom:30px}.registration-form[_ngcontent-ng-c1907091599]{display:flex;flex-direction:column;gap:20px}.input-group[_ngcontent-ng-c1907091599]{display:flex;flex-direction:column;gap:8px}.input-group[_ngcontent-ng-c1907091599]   label[_ngcontent-ng-c1907091599]{font-size:14px;font-weight:600;color:#e0e0e0}.input-group[_ngcontent-ng-c1907091599]   input[_ngcontent-ng-c1907091599]{padding:12px 16px;border:2px solid rgba(255,255,255,.2);background:#ffffff1a;color:#fff;border-radius:8px;font-size:16px;transition:all .3s ease;outline:none}.input-group[_ngcontent-ng-c1907091599]   input[_ngcontent-ng-c1907091599]::placeholder{color:#ffffff80}.input-group[_ngcontent-ng-c1907091599]   input[_ngcontent-ng-c1907091599]:focus{border-color:#667eea;background:#ffffff26;box-shadow:0 0 0 3px #667eea4d}.input-group[_ngcontent-ng-c1907091599]   input[_ngcontent-ng-c1907091599]:disabled{background-color:#ffffff0d;cursor:not-allowed;opacity:.6}.password-input-wrapper[_ngcontent-ng-c1907091599]{position:relative}.password-input-wrapper[_ngcontent-ng-c1907091599]   input[_ngcontent-ng-c1907091599]{padding-right:45px}.toggle-password[_ngcontent-ng-c1907091599]{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:18px;padding:5px;color:#ffffffb3;transition:color .3s}.toggle-password[_ngcontent-ng-c1907091599]:hover:not(:disabled){color:#fff}.toggle-password[_ngcontent-ng-c1907091599]:disabled{opacity:.5;cursor:not-allowed}.register-button[_ngcontent-ng-c1907091599]{padding:14px;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer;transition:all .3s ease;margin-top:10px}.register-button[_ngcontent-ng-c1907091599]:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 20px #667eea4d}.register-button[_ngcontent-ng-c1907091599]:active:not(:disabled){transform:translateY(0)}.register-button[_ngcontent-ng-c1907091599]:disabled{opacity:.6;cursor:not-allowed}.status-message[_ngcontent-ng-c1907091599]{padding:12px 16px;border-radius:8px;font-size:14px;text-align:center;animation:_ngcontent-ng-c1907091599_slideIn .3s ease}.status-message.success[_ngcontent-ng-c1907091599]{background-color:#d4edda;color:#155724;border:1px solid #c3e6cb}.status-message.error[_ngcontent-ng-c1907091599]{background-color:#f8d7da;color:#721c24;border:1px solid #f5c6cb}@keyframes _ngcontent-ng-c1907091599_slideIn{0%{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}@media (max-width: 480px){.registration-card[_ngcontent-ng-c1907091599]{padding:30px 20px}.title[_ngcontent-ng-c1907091599]{font-size:24px}.header-bar[_ngcontent-ng-c1907091599]{flex-direction:column;gap:10px;text-align:center}}.list-card[_ngcontent-ng-c1907091599]{background:#000000b3;-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.1);border-radius:16px;box-shadow:0 20px 60px #00000080;padding:30px;width:100%;max-width:800px;margin:20px auto 0;position:relative;z-index:1}.list-header[_ngcontent-ng-c1907091599]{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.list-header[_ngcontent-ng-c1907091599]   h2[_ngcontent-ng-c1907091599]{color:#fff;font-size:22px;margin:0;font-weight:700}.list-header[_ngcontent-ng-c1907091599]   button[_ngcontent-ng-c1907091599]{padding:8px 20px;background-color:#667eea;color:#fff;border:none;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;transition:background-color .3s}.list-header[_ngcontent-ng-c1907091599]   button[_ngcontent-ng-c1907091599]:hover:not(:disabled){background-color:#5568d3}.list-header[_ngcontent-ng-c1907091599]   button[_ngcontent-ng-c1907091599]:disabled{opacity:.6;cursor:not-allowed}.empty-state[_ngcontent-ng-c1907091599]{text-align:center;color:#fff9;padding:40px;font-size:16px}.emails-table[_ngcontent-ng-c1907091599]{width:100%;border-collapse:collapse}.emails-table[_ngcontent-ng-c1907091599]   thead[_ngcontent-ng-c1907091599]{background-color:#ffffff0d}.emails-table[_ngcontent-ng-c1907091599]   th[_ngcontent-ng-c1907091599]{padding:12px;text-align:left;font-weight:600;color:#e0e0e0;border-bottom:2px solid rgba(255,255,255,.1)}.emails-table[_ngcontent-ng-c1907091599]   td[_ngcontent-ng-c1907091599]{padding:12px;border-bottom:1px solid rgba(255,255,255,.1);color:#fff}.emails-table[_ngcontent-ng-c1907091599]   tbody[_ngcontent-ng-c1907091599]   tr[_ngcontent-ng-c1907091599]:hover{background-color:#667eea1a}.emails-table[_ngcontent-ng-c1907091599]   tbody[_ngcontent-ng-c1907091599]   tr.selected[_ngcontent-ng-c1907091599], .emails-table[_ngcontent-ng-c1907091599]   tbody[_ngcontent-ng-c1907091599]   tr[aria-selected=true][_ngcontent-ng-c1907091599]{background-color:#667eea4d;outline:2px solid rgba(102,126,234,.6)}.list-actions[_ngcontent-ng-c1907091599]   button[disabled][_ngcontent-ng-c1907091599]{opacity:.6;cursor:not-allowed}.app-footer[_ngcontent-ng-c1907091599]{margin-top:auto;background:#000000b3;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,.1);border-radius:12px 12px 0 0;padding:30px 40px 20px;color:#fff;position:relative;z-index:10}.footer-content[_ngcontent-ng-c1907091599]{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:30px;margin-bottom:20px}.footer-section[_ngcontent-ng-c1907091599]   h4[_ngcontent-ng-c1907091599]{color:#667eea;font-size:16px;margin-bottom:15px;font-weight:600}.footer-section[_ngcontent-ng-c1907091599]   p[_ngcontent-ng-c1907091599]{color:#ccc;font-size:14px;margin-bottom:8px;line-height:1.6}.footer-section[_ngcontent-ng-c1907091599]   a[_ngcontent-ng-c1907091599]{display:block;color:#ccc;text-decoration:none;font-size:14px;margin-bottom:8px;transition:color .3s ease;cursor:pointer}.footer-section[_ngcontent-ng-c1907091599]   a[_ngcontent-ng-c1907091599]:hover{color:#667eea}.footer-bottom[_ngcontent-ng-c1907091599]{text-align:center;padding-top:20px;border-top:1px solid rgba(255,255,255,.1)}.footer-bottom[_ngcontent-ng-c1907091599]   p[_ngcontent-ng-c1907091599]{color:#999;font-size:13px}@media (max-width: 768px){.footer-content[_ngcontent-ng-c1907091599]{grid-template-columns:1fr;gap:20px}.app-footer[_ngcontent-ng-c1907091599]{padding:20px}}</style><style ng-app-id="ng">.about-container[_ngcontent-ng-c3458868449]{min-height:100vh;padding:20px;background:url(/assets/cityscape.png) center/cover no-repeat;background-attachment:fixed;background-color:#1a2332}.about-box[_ngcontent-ng-c3458868449]{max-width:800px;margin:0 auto;background:#222c3ae6;border-radius:12px;padding:40px;border:1px solid #4a5568}.title[_ngcontent-ng-c3458868449]{color:gold;font-size:32px;font-weight:700;margin-bottom:24px;text-align:center}.section-title[_ngcontent-ng-c3458868449]{color:gold;font-size:18px;font-weight:600;margin-top:24px;margin-bottom:12px}.description[_ngcontent-ng-c3458868449]{color:#fff;font-size:14px;line-height:24px;margin-bottom:12px}.back-button-container[_ngcontent-ng-c3458868449]{margin-top:32px;text-align:center}.back-button[_ngcontent-ng-c3458868449]{display:inline-block;padding:12px 24px;background:gold;color:#1a2332;text-decoration:none;border-radius:6px;font-weight:600;transition:all .3s}.back-button[_ngcontent-ng-c3458868449]:hover{background:#ffed4e;transform:translateY(-2px);box-shadow:0 4px 12px #ffd7004d}@media (max-width: 768px){.about-box[_ngcontent-ng-c3458868449]{padding:20px}.title[_ngcontent-ng-c3458868449]{font-size:24px}.section-title[_ngcontent-ng-c3458868449]{font-size:16px}}</style></head>
+<body><!--nghm--><script type="text/javascript" id="ng-event-dispatch-contract">(()=>{function p(t,n,r,o,e,i,f,m){return{eventType:t,event:n,targetElement:r,eic:o,timeStamp:e,eia:i,eirp:f,eiack:m}}function u(t){let n=[],r=e=>{n.push(e)};return{c:t,q:n,et:[],etc:[],d:r,h:e=>{r(p(e.type,e,e.target,t,Date.now()))}}}function s(t,n,r){for(let o=0;o<n.length;o++){let e=n[o];(r?t.etc:t.et).push(e),t.c.addEventListener(e,t.h,r)}}function c(t,n,r,o,e=window){let i=u(t);e._ejsas||(e._ejsas={}),e._ejsas[n]=i,s(i,r),s(i,o,!0)}window.__jsaction_bootstrap=c;})();
+</script><script>window.__jsaction_bootstrap(document.body,"ng",["click"],[]);</script>
+  <!-- Static fallback login visible immediately for /login to avoid SSR hydration gaps -->
+  <div id="static-login" style="display:none;position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:10000;">
+    <div style="background:white;padding:24px;border-radius:8px;max-width:420px;width:100%;box-shadow:0 10px 30px rgba(0,0,0,0.15);">
+      <h2 style="margin-top:0;margin-bottom:16px;">Email Registration Login</h2>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+        <input id="static-email" placeholder="Enter your email" style="padding:10px;border:1px solid #ddd;border-radius:4px;">
+        <div style="position:relative;">
+          <input id="static-password" type="password" placeholder="Enter your password" style="padding:10px;border:1px solid #ddd;border-radius:4px;width:100%;">
+          <button id="static-toggle" aria-label="Toggle password" style="position:absolute;right:6px;top:6px;border:none;background:transparent;font-size:18px;cursor:pointer;">👁️</button>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button id="static-login-btn" style="padding:10px;background:#4CAF50;color:white;border:none;border-radius:4px;">Login</button>
+          <div id="static-error" style="color:#c62828;font-size:13px;display:none;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-root ng-version="20.3.10" _nghost-ng-c1907091599 ngh="1" ng-server-context="ssg"><div _ngcontent-ng-c1907091599 class="app-container"><div _ngcontent-ng-c1907091599 class="header-bar"><div _ngcontent-ng-c1907091599 class="header-left"><button _ngcontent-ng-c1907091599 type="button" aria-label="Toggle menu" class="hamburger-menu" jsaction="click:;"><span _ngcontent-ng-c1907091599></span><span _ngcontent-ng-c1907091599></span><span _ngcontent-ng-c1907091599></span></button><h3 _ngcontent-ng-c1907091599>Email Registration Service</h3></div><!----><div _ngcontent-ng-c1907091599 class="menu-dropdown"><div _ngcontent-ng-c1907091599 class="menu-items"><button _ngcontent-ng-c1907091599 type="button" class="menu-item" jsaction="click:;"><span _ngcontent-ng-c1907091599 class="menu-icon">🏠</span><span _ngcontent-ng-c1907091599 class="menu-text">Home</span></button><button _ngcontent-ng-c1907091599 type="button" class="menu-item" jsaction="click:;"><span _ngcontent-ng-c1907091599 class="menu-icon">📧</span><span _ngcontent-ng-c1907091599 class="menu-text">Register</span></button><!----><button _ngcontent-ng-c1907091599 type="button" class="menu-item" jsaction="click:;"><span _ngcontent-ng-c1907091599 class="menu-icon">🔐</span><span _ngcontent-ng-c1907091599 class="menu-text">Login</span></button><!----><!----><!----><!----><button _ngcontent-ng-c1907091599 type="button" class="menu-item" jsaction="click:;"><span _ngcontent-ng-c1907091599 class="menu-icon">ℹ️</span><span _ngcontent-ng-c1907091599 class="menu-text">About</span></button><button _ngcontent-ng-c1907091599 type="button" class="menu-item" jsaction="click:;"><span _ngcontent-ng-c1907091599 class="menu-icon">📞</span><span _ngcontent-ng-c1907091599 class="menu-text">Contact</span></button></div></div></div><div _ngcontent-ng-c1907091599 class="content-area"><router-outlet _ngcontent-ng-c1907091599></router-outlet><app-about _nghost-ng-c3458868449 ngh="0"><div _ngcontent-ng-c3458868449 class="about-container"><div _ngcontent-ng-c3458868449 class="about-box"><h1 _ngcontent-ng-c3458868449 class="title">About Technet7</h1><h2 _ngcontent-ng-c3458868449 class="section-title">Who We Are</h2><p _ngcontent-ng-c3458868449 class="description"> Technet7 is a leading technology solutions provider specializing in AI, cloud infrastructure, and custom software development. </p><h2 _ngcontent-ng-c3458868449 class="section-title">Our Mission</h2><p _ngcontent-ng-c3458868449 class="description"> To empower businesses with innovative technology solutions that drive growth, efficiency, and digital transformation. </p><h2 _ngcontent-ng-c3458868449 class="section-title">Our Services</h2><p _ngcontent-ng-c3458868449 class="description"> • AI &amp; Machine Learning Solutions<br _ngcontent-ng-c3458868449> • Cloud Infrastructure &amp; DevOps<br _ngcontent-ng-c3458868449> • Mobile &amp; Web Development<br _ngcontent-ng-c3458868449> • Custom Software Development<br _ngcontent-ng-c3458868449> • Data Analytics &amp; Modeling </p><h2 _ngcontent-ng-c3458868449 class="section-title">Why Choose Us?</h2><p _ngcontent-ng-c3458868449 class="description"> • Expert team with 15+ years of experience<br _ngcontent-ng-c3458868449> • Proven track record with Fortune 500 companies<br _ngcontent-ng-c3458868449> • Cutting-edge technology and best practices<br _ngcontent-ng-c3458868449> • 24/7 Support and maintenance </p><h2 _ngcontent-ng-c3458868449 class="section-title">Contact Information</h2><p _ngcontent-ng-c3458868449 class="description"> Email: info@technet7.com<br _ngcontent-ng-c3458868449> Phone: +1 (555) 123-4567<br _ngcontent-ng-c3458868449> Address: 123 Tech Street, San Francisco, CA 94105 </p><div _ngcontent-ng-c3458868449 class="back-button-container"><a _ngcontent-ng-c3458868449 routerlink="/home" class="back-button" href="/home" jsaction="click:;">← Back to Home</a></div></div></div></app-about><!----></div><footer _ngcontent-ng-c1907091599 class="app-footer"><div _ngcontent-ng-c1907091599 class="footer-content"><div _ngcontent-ng-c1907091599 class="footer-section"><h4 _ngcontent-ng-c1907091599>Contact Us</h4><p _ngcontent-ng-c1907091599>Email Registration Services</p><p _ngcontent-ng-c1907091599>123 Tech Street</p><p _ngcontent-ng-c1907091599>San Francisco, CA 94105</p><p _ngcontent-ng-c1907091599>Email: info@emailreg.com</p></div><div _ngcontent-ng-c1907091599 class="footer-section"><h4 _ngcontent-ng-c1907091599>Quick Links</h4><a _ngcontent-ng-c1907091599 jsaction="click:;">About Us</a><a _ngcontent-ng-c1907091599 jsaction="click:;">Contact</a><a _ngcontent-ng-c1907091599 jsaction="click:;">Home</a></div><div _ngcontent-ng-c1907091599 class="footer-section"><h4 _ngcontent-ng-c1907091599>Legal</h4><a _ngcontent-ng-c1907091599 href="#">Privacy Policy</a><a _ngcontent-ng-c1907091599 href="#">Terms of Service</a><a _ngcontent-ng-c1907091599 href="#">Cookie Policy</a></div></div><div _ngcontent-ng-c1907091599 class="footer-bottom"><p _ngcontent-ng-c1907091599>© 2025 Email Registration Service. All rights reserved.</p></div></footer></div></app-root>
+  <script>
+    // Remove the static fallback once the SPA has hydrated or replaced the markup
+    (function(){
+      try {
+        var attempts = 0;
+        var max = 200; // ~20s - give SPA more time to hydrate in slow environments
+        var id = setInterval(function(){
+          attempts++;
+          try {
+            var root = document.querySelector('app-root');
+            var staticLogin = document.getElementById('static-login');
+            if (!staticLogin) { clearInterval(id); return; }
+            // If SPA rendered a form or a router-outlet (indicating the app booted), hide the static fallback
+            var hydrated = false;
+            if (root && root.querySelector) {
+              if (root.querySelector('form')) hydrated = true;
+              if (root.querySelector('router-outlet')) hydrated = true;
+            }
+            if (hydrated) {
+              try { staticLogin.style.display = 'none'; } catch(e){}
+              console.log('[pre-bootstrap] static-login overlay hidden after SPA rendered');
+              clearInterval(id);
+              return;
+            }
+            if (attempts > max) { clearInterval(id); }
+          } catch(e){ clearInterval(id); }
+        }, 100);
+      } catch(e){}
+    })();
+  </script>
+<script src="main-IAXFVVDH.js" type="module"></script>
+
+<script id="ng-state" type="application/json">{"__nghData__":[{},{"t":{"9":"t0","17":"t1","18":"t2","19":"t3","20":"t4","21":"t5"},"c":{"9":[],"17":[{"i":"t1","r":1}],"18":[{"i":"t2","r":1}],"19":[],"20":[],"21":[],"33":[{"i":"c3458868449","r":1}]}}]}</script></body></html>

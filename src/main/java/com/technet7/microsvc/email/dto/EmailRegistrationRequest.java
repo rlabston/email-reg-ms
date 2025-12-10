@@ -1,5 +1,7 @@
 package com.technet7.microsvc.email.dto;
 
+import java.util.Set;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
@@ -15,6 +17,8 @@ public class EmailRegistrationRequest {
     @jakarta.validation.constraints.NotBlank(message = "Password is required")
     @jakarta.validation.constraints.Size(min = 8, message = "Password must be at least 8 characters")
     private String password;
+
+    private Set<String> roles; // Optional: for admin registration
 
     // Getters and setters
     public String getEmail() {
@@ -39,5 +43,13 @@ public class EmailRegistrationRequest {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Set<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
     }
 }

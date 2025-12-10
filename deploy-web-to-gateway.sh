@@ -12,26 +12,20 @@ rm -rf ~/dev/mobile/spring/email-reg-ms/gateway/src/main/resources/static/*
 cp -r ~/dev/mobile/spring/email-reg-ms/web-frontend/dist/web-frontend/browser/* \
       ~/dev/mobile/spring/email-reg-ms/gateway/src/main/resources/static/
 
-echo "=== Rebuilding Gateway ==="
+echo "=== Rebuilding Gateway JAR with clean build ==="
 cd ~/dev/mobile/spring/email-reg-ms
-./gradlew :gateway:build -x test
+./gradlew :gateway:clean :gateway:bootJar -x test
 
-echo "=== Restarting Gateway ==="
-GATEWAY_PID=$(cat gateway.pid 2>/dev/null || echo "")
-if [ -n "$GATEWAY_PID" ]; then
-    echo "Stopping gateway PID $GATEWAY_PID"
-    kill $GATEWAY_PID 2>/dev/null || true
-    sleep 2
-    kill -9 $GATEWAY_PID 2>/dev/null || true
-fi
+echo "=== Starting Backend and Gateway Services ==="
+# Use start-dev.sh which handles both services properly
+# It will:
+# 1. Kill any existing processes on ports 8080 and 8081
+# 2. Start backend on 8081 and wait for it to be ready
+# 3. Start gateway on 8080 and wait for it to be ready
+bash scripts/start-dev.sh
 
-nohup ./gradlew :gateway:bootRun > gateway.log 2>&1 &
-NEW_PID=$!
-echo $NEW_PID > gateway.pid
-echo "Gateway started with PID: $NEW_PID"
-
-sleep 5
-echo "=== Verifying Gateway ==="
+echo "=== Verifying Services ==="
+curl -s http://localhost:8081/actuator/health | grep -q "UP" && echo "✓ Backend running on http://localhost:8081" || echo "✗ Backend check failed"
 curl -s http://localhost:8080/ | grep -q "html" && echo "✓ Gateway serving web app on http://localhost:8080" || echo "✗ Gateway check failed"
 
 echo "=== Deployment Complete ==="

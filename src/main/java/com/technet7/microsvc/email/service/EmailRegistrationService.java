@@ -2,6 +2,8 @@ package com.technet7.microsvc.email.service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.slf4j.Logger;
@@ -11,26 +13,47 @@ import org.springframework.stereotype.Service;
 import com.technet7.microsvc.email.dto.EmailRegistrationResponse;
 import com.technet7.microsvc.email.exception.EmailAlreadyRegisteredException;
 import com.technet7.microsvc.email.model.RegisteredEmail;
+import com.technet7.microsvc.email.model.Role;
 import com.technet7.microsvc.email.repository.EmailRegistrationRepository;
+import com.technet7.microsvc.email.repository.RoleRepository;
 
 @Service
 public class EmailRegistrationService {
     
     private final EmailRegistrationRepository emailRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private static final Logger log = LoggerFactory.getLogger(EmailRegistrationService.class);
-    public EmailRegistrationService(EmailRegistrationRepository emailRepository, PasswordEncoder passwordEncoder) {
+    
+    public EmailRegistrationService(EmailRegistrationRepository emailRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.emailRepository = emailRepository;
+        this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
     }
     
     public EmailRegistrationResponse registerEmail(String email, String username, String password) {
+        return registerEmail(email, username, password, null);
+    }
+
+    public EmailRegistrationResponse registerEmail(String email, String username, String password, Set<String> roleNames) {
         if (emailRepository.existsByEmail(email)) {
             throw new EmailAlreadyRegisteredException("Email " + email + " is already registered");
         }
 
         String hashed = passwordEncoder.encode(password);
         RegisteredEmail registeredEmail = new RegisteredEmail(email, username, hashed);
+
+        // Assign roles if provided
+        if (roleNames != null && !roleNames.isEmpty()) {
+            Set<Role> roles = roleNames.stream()
+                .map(name -> roleRepository.findByName(name)
+                    .orElseGet(() -> {
+                        Role newRole = new Role(name);
+                        return roleRepository.save(newRole);
+                    }))
+                .collect(Collectors.toSet());
+            registeredEmail.setRoles(roles);
+        }
         registeredEmail = emailRepository.save(registeredEmail);
 
         return new EmailRegistrationResponse(
@@ -47,6 +70,10 @@ public class EmailRegistrationService {
     
     public Optional<RegisteredEmail> getRegisteredEmail(String email) {
         return emailRepository.findByEmail(email);
+    }
+
+    public Optional<RegisteredEmail> getRegisteredEmailById(Long id) {
+        return emailRepository.findById(id);
     }
 
     public Optional<RegisteredEmail> authenticate(String email, String password) {
@@ -102,5 +129,53 @@ public class EmailRegistrationService {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Update an existing user's information.
+     * @param id the user id
+     * @param email new email (optional)
+     * @param username new username (optional)
+     * @param password new password (optional, will be hashed)
+     * @param roleNames new set of role names (optional)
+     * @return updated RegisteredEmail or empty if not found
+     */
+    public Optional<RegisteredEmail> updateUser(Long id, String email, String username, String password, Set<String> roleNames) {
+        Optional<RegisteredEmail> userOpt = emailRepository.findById(id);
+        if (userOpt.isEmpty()) {
+            return Optional.empty();
+        }
+
+        RegisteredEmail user = userOpt.get();
+
+        // Update email if provided
+        if (email != null && !email.isBlank()) {
+            user.setEmail(email);
+        }
+
+        // Update username if provided
+        if (username != null && !username.isBlank()) {
+            user.setUsername(username);
+        }
+
+        // Update password if provided
+        if (password != null && !password.isBlank()) {
+            user.setPasswordHash(passwordEncoder.encode(password));
+        }
+
+        // Update roles if provided
+        if (roleNames != null && !roleNames.isEmpty()) {
+            Set<Role> roles = roleNames.stream()
+                .map(name -> roleRepository.findByName(name)
+                    .orElseGet(() -> {
+                        Role newRole = new Role(name);
+                        return roleRepository.save(newRole);
+                    }))
+                .collect(Collectors.toSet());
+            user.setRoles(roles);
+        }
+
+        RegisteredEmail updated = emailRepository.save(user);
+        return Optional.of(updated);
     }
 }

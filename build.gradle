@@ -4,7 +4,7 @@ plugins {
     id 'io.spring.dependency-management' version '1.1.7'
     // Centralize Kotlin and KSP plugin versions for subprojects. Using the latest
     // published plugin versions available on Maven Central as of this check.
-    id 'org.jetbrains.kotlin.jvm' version '2.2.0' apply false
+    id 'org.jetbrains.kotlin.jvm' version '1.9.0' apply false
     id 'com.google.devtools.ksp' version '2.2.0-2.0.2' apply false
 }
 
@@ -14,8 +14,8 @@ description = 'Email Registration Microservice'
 
 java {
     toolchain {
-        // Use Java 21 for compilation (requested upgrade)
-        languageVersion = JavaLanguageVersion.of(21)
+        // Use Java 24 for compilation
+        languageVersion = JavaLanguageVersion.of(24)
     }
 }
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 import { EmailRegistrationRequest, EmailRegistrationResponse } from '../models/email-registration.model';
 import { RegisteredEmailDto } from '../models/registered-email.model';
 import { LoginRequest, LoginResponse } from '../models/login.model';
@@ -14,6 +14,7 @@ export class EmailRegistrationService {
   private loginUrl = '/api/emails/login';
   private logoutUrl = '/api/auth/logout';
   private deleteByEmailUrl = '/api/emails/email';
+  private updateUserUrl = '/api/emails';
 
   // If the frontend is served from the dev server (localhost:4200) and
   // the proxy isn't configured/used, fall back to the backend host so
@@ -76,5 +77,25 @@ export class EmailRegistrationService {
   getCurrentUser(): Observable<any> {
     const headers = this.authHeaders();
     return this.http.get<any>(this.getApi('/api/auth/me'), { headers });
+  }
+
+  updateUser(request: any): Observable<any> {
+    const headers = this.authHeaders();
+    return this.http.put<any>(this.getApi(`${this.updateUserUrl}/${request.id}`), request, { headers });
+  }
+
+  getUserWithRoles(id: number): Observable<any> {
+    const headers = this.authHeaders();
+    return this.http.get<any>(this.getApi(`/api/emails/with-roles/${id}`), { headers });
+  }
+
+  sendChatMessage(message: string, conversationId: string | null): Promise<any> {
+    const headers = this.authHeaders();
+    return firstValueFrom(
+      this.http.post<any>(this.getApi('/api/chat/message'), 
+        { message, conversationId },
+        { headers }
+      )
+    );
   }
 }
