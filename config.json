@@ -1,0 +1,26 @@
+{
+  "project": "email-reg-ms",
+  "description": "Spring Boot email registration microservice with gateway",
+  "service": {
+    "gateway": {
+      "port": 8080,
+      "host": "localhost",
+      "protocol": "http",
+      "publicUrl": "http://localhost:8080"
+    },
+    "backend": {
+      "port": 8081,
+      "host": "localhost",
+      "protocol": "http",
+      "internalUrl": "http://localhost:8081"
+    }
+  },
+  "build": {
+    "framework": "Gradle",
+    "command": "./gradlew clean build"
+  },
+  "deployment": {
+    "startScript": "./scripts/start-dev.sh",
+    "stopScript": "./scripts/stop-dev.sh"
+  }
+}
