@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, FlatList, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, FlatList, ActivityIndicator, Alert } from 'react-native';
+import { apiFetch, API_ENDPOINTS } from '../config/api';
 
 export default function EmailListScreen() {
   const [mode, setMode] = useState('list'); // 'list' | 'register'
@@ -17,9 +18,10 @@ export default function EmailListScreen() {
   const loadEmails = async () => {
     setLoading(true);
     try {
-      // TODO: Call API to fetch emails
-      // const response = await ApiService.getRegisteredEmails();
-      // setEmails(response);
+      const response = await apiFetch(API_ENDPOINTS.EMAILS, {
+        method: 'GET',
+      });
+      setEmails(response || []);
       setError(null);
     } catch (err) {
       setError(err.message || 'Failed to load emails');
@@ -36,20 +38,45 @@ export default function EmailListScreen() {
 
     setLoading(true);
     try {
-      // TODO: Call API to register email
-      // const response = await ApiService.registerEmail(formData);
-      // if (response.success) {
-      //   setMode('list');
-      //   loadEmails();
-      // }
+      await apiFetch(API_ENDPOINTS.REGISTER, {
+        method: 'POST',
+        body: JSON.stringify(formData),
+      });
+      
+      Alert.alert('Success', 'Email registered successfully!');
       setError(null);
       setFormData({ email: '', username: '', password: '' });
       setMode('list');
+      loadEmails();
     } catch (err) {
       setError(err.message || 'Failed to register email');
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDeleteEmail = async (id) => {
+    Alert.alert(
+      'Confirm Delete',
+      'Are you sure you want to delete this email?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await apiFetch(`${API_ENDPOINTS.EMAILS}/${id}`, {
+                method: 'DELETE',
+              });
+              loadEmails();
+            } catch (err) {
+              Alert.alert('Error', err.message || 'Failed to delete email');
+            }
+          },
+        },
+      ]
+    );
   };
 
   const EmailListView = () => (
@@ -72,12 +99,15 @@ export default function EmailListScreen() {
           <View style={styles.emailItem}>
             <Text style={styles.emailText}>{item.email}</Text>
             <Text style={styles.usernameText}>{item.username}</Text>
-            <TouchableOpacity style={styles.deleteButton}>
+            <TouchableOpacity 
+              style={styles.deleteButton}
+              onPress={() => handleDeleteEmail(item.id)}
+            >
               <Text style={styles.deleteButtonText}>Delete</Text>
             </TouchableOpacity>
           </View>
         )}
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.id ? item.id.toString() : Math.random().toString()}
         contentContainerStyle={styles.emailsList}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>

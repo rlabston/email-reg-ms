@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { useAuth } from '../context/AuthContext';
 
 export default function HomeScreen() {
   const [homeData, setHomeData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { username, userEmail, isAuthenticated } = useAuth();
 
   // Featured Services
   const featuredServices = [
@@ -64,6 +66,11 @@ export default function HomeScreen() {
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
       <Text style={styles.welcomeTitle}>Welcome to Technet7 AI Services</Text>
       <Text style={styles.welcomeSubtitle}>Innovative Technology Solutions for Modern Businesses</Text>
+      {isAuthenticated() && (username || userEmail) && (
+        <Text style={styles.welcomeMessage}>
+          Welcome back, {username || userEmail}!
+        </Text>
+      )}
       
       <Text style={styles.sectionTitle}>Featured Services</Text>
       <ScrollView 
@@ -126,11 +133,24 @@ const styles = StyleSheet.create({
   welcomeSubtitle: {
     color: '#fff',
     fontSize: 16,
-    marginBottom: 32,
+    marginBottom: 16,
     textAlign: 'center',
     textShadowColor: '#222c3a',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
+  },
+  welcomeMessage: {
+    fontSize: 18,
+    color: '#ffd700',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    backgroundColor: 'rgba(255, 215, 0, 0.1)',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ffd700',
   },
   sectionTitle: {
     color: '#ffd700',

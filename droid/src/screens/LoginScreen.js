@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
+import { apiFetch, API_ENDPOINTS, setToken, setTokenUpdateCallback } from '../config/api';
+import { useAuth } from '../context/AuthContext';
 
-export default function LoginScreen() {
+export default function LoginScreen({ onLoginSuccess }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
+  const { saveToken } = useAuth();
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -18,11 +21,26 @@ export default function LoginScreen() {
     setError(null);
 
     try {
-      // TODO: Call login API endpoint
-      // const response = await ApiService.login(email, password);
-      // if (response.success) {
-      //   navigate to home/services
-      // }
+      const response = await apiFetch(API_ENDPOINTS.LOGIN, {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+      });
+      
+      if (response && response.token) {
+        // Store token in runtime context (memory only)
+        setToken(response.token);
+        saveToken(response.token, response.email, response.username);
+        
+        // Set callback for automatic token updates from X-New-JWT header
+        setTokenUpdateCallback((newToken) => {
+          saveToken(newToken, response.email, response.username);
+        });
+        
+        // Navigate to home without popup
+        if (onLoginSuccess) {
+          onLoginSuccess();
+        }
+      }
     } catch (err) {
       setError(err.message || 'Login failed');
     } finally {

@@ -154,6 +154,8 @@ interface HomeScreenData {
       font-weight: bold;
       margin-bottom: 16px;
       padding: 0 8px;
+      color: #ffd700;
+      text-shadow: 1px 1px 2px #222c3a;
     }
 
     .horizontal-scroll {
@@ -162,7 +164,7 @@ interface HomeScreenData {
       overflow-x: auto;
       padding: 8px;
       scrollbar-width: thin;
-      scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+      scrollbar-color: rgba(255, 215, 0, 0.5) transparent;
     }
 
     .horizontal-scroll::-webkit-scrollbar {
@@ -170,18 +172,24 @@ interface HomeScreenData {
     }
 
     .horizontal-scroll::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 215, 0, 0.5);
       border-radius: 4px;
     }
 
     .service-card {
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(34, 44, 58, 0.9);
       border-radius: 12px;
       padding: 24px;
       min-width: 300px;
       max-width: 350px;
       flex-shrink: 0;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 2px solid #ffd700;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .service-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 12px rgba(255, 215, 0, 0.3);
     }
 
     .service-icon {
@@ -192,10 +200,12 @@ interface HomeScreenData {
     .service-card h3 {
       font-size: 1.25rem;
       margin-bottom: 12px;
+      color: #ffd700;
+      font-weight: bold;
     }
 
     .service-description {
-      color: #ccc;
+      color: #fff;
       font-size: 0.95rem;
       line-height: 1.5;
     }

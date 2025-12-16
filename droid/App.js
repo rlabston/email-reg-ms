@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Image, Text, TouchableOpacity, Modal, ScrollView } from 'react-native';
+import { AuthProvider } from './src/context/AuthContext';
 import HomeScreen from './src/screens/HomeScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import ChatbotScreen from './src/screens/ChatbotScreen';
@@ -19,7 +20,7 @@ export default function App() {
   const renderPage = () => {
     switch (currentPage) {
       case 'login':
-        return <LoginScreen />;
+        return <LoginScreen onLoginSuccess={() => setCurrentPage('home')} />;
       case 'chatbot':
         return <ChatbotScreen />;
       case 'emails':
@@ -35,8 +36,9 @@ export default function App() {
   };
 
   return (
-    <View style={styles.container}>
-      <Image source={require('./assets/cityscape.png')} style={styles.background} />
+    <AuthProvider>
+      <View style={styles.container}>
+        <Image source={require('./assets/cityscape.png')} style={styles.background} />
       
       {/* Menu Modal */}
       <Modal
@@ -112,7 +114,8 @@ export default function App() {
       <View style={styles.pageContainer}>
         {renderPage()}
       </View>
-    </View>
+      </View>
+    </AuthProvider>
   );
 }
 

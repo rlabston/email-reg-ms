@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, FlatList, ActivityIndicator } from 'react-native';
+import { apiFetch, API_ENDPOINTS } from '../config/api';
 
 export default function ChatbotScreen() {
   const [messages, setMessages] = useState([
@@ -13,14 +14,17 @@ export default function ChatbotScreen() {
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [conversationId, setConversationId] = useState(null);
 
   const handleSendMessage = async () => {
     if (!inputText.trim()) return;
 
+    const messageText = inputText.trim();
+    
     // Add user message
     const userMessage = {
       id: Date.now().toString(),
-      text: inputText,
+      text: messageText,
       isUser: true,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     };
@@ -28,24 +32,38 @@ export default function ChatbotScreen() {
     setMessages(prev => [...prev, userMessage]);
     setInputText('');
     setIsLoading(true);
+    setError(null);
 
     try {
-      // TODO: Call chatbot API endpoint
-      // const response = await ApiService.sendChatbotMessage(inputText);
+      const response = await apiFetch(API_ENDPOINTS.CHAT, {
+        method: 'POST',
+        body: JSON.stringify({ 
+          message: messageText,
+          conversationId: conversationId 
+        }),
+      });
       
-      // Simulate API response
-      setTimeout(() => {
-        const botMessage = {
-          id: (Date.now() + 1).toString(),
-          text: "I'm processing your request. In a real implementation, this would be a response from MindsDB.",
-          isUser: false,
-          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        };
-        setMessages(prev => [...prev, botMessage]);
-        setIsLoading(false);
-      }, 1000);
+      if (response.conversationId) {
+        setConversationId(response.conversationId);
+      }
+      
+      const botMessage = {
+        id: (Date.now() + 1).toString(),
+        text: response.message || "I received your message.",
+        isUser: false,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      };
+      setMessages(prev => [...prev, botMessage]);
     } catch (err) {
       setError(err.message || 'Failed to send message');
+      const errorMessage = {
+        id: (Date.now() + 1).toString(),
+        text: "Sorry, I'm having trouble connecting. Please try again.",
+        isUser: false,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
       setIsLoading(false);
     }
   };
