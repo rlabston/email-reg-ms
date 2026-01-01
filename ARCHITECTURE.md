@@ -8,7 +8,7 @@ All client communication goes through the **Gateway (port 8080)** for scalabilit
 ┌─────────────────┐
 │   Web Browser   │────────────┐
 │  localhost:8080 │            │
-└────────┬────────┘            │
+└─────────────────┘            │
                                │
                                ▼
 ┌─────────────────┐       ┌──────────────────┐
