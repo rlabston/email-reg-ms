@@ -6,13 +6,13 @@ All client communication goes through the **Gateway (port 8080)** for scalabilit
 
 ```
 ┌─────────────────┐
-│   Web Browser   │
-│  localhost:8080 │
-└────────┬────────┘
-         │
-         ▼
+│   Web Browser   │────────────┐
+│  localhost:8080 │            │
+└────────┬────────┘            │
+                               │
+                               ▼
 ┌─────────────────┐       ┌──────────────────┐
-│  Mobile App     │──────▶│   Gateway:8080   │
+│  Mobile App     │─────▶│   Gateway:8080   │
 │ (10.0.2.2:8080) │       │  Single Entry    │
 └─────────────────┘       │     Point        │
                           └────────┬─────────┘
